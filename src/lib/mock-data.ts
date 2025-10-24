@@ -1,5 +1,6 @@
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -608,5 +609,20 @@ export const mockCropDistribution: { region: string, crop: string, diseaseSeveri
     { region: 'Karnataka', crop: 'Coffee', diseaseSeverity: 'Low' },
     { region: 'Gujarat', crop: 'Cotton', diseaseSeverity: 'Critical' },
 ];
+
+export const mockGoals = [
+    { name: 'Monthly Income', current: 780000, target: 1000000, unit: '₹' },
+    { name: 'Tomato Yield', current: 4500, target: 5000, unit: 'kg' },
+    { name: 'Market Reach', current: 3, target: 5, unit: 'mandis' },
+];
+  
+export const mockRoiData = [
+    { crop: 'Tomato', roi: 250 },
+    { crop: 'Wheat', roi: 180 },
+    { crop: 'Onion', roi: 210 },
+    { crop: 'Potato', roi: 160 },
+    { crop: 'Rice', roi: 220 },
+];
+    
 
     
