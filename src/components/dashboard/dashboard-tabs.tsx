@@ -34,19 +34,19 @@ export default function DashboardTabs() {
           AgroBot
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="crop-health" className="mt-4">
+      <TabsContent value="crop-health" id="crop-health" className="mt-4">
         <CropHealthTab />
       </TabsContent>
-      <TabsContent value="market-insights" className="mt-4">
+      <TabsContent value="market-insights" id="market-insights" className="mt-4">
         <MarketInsightsTab />
       </TabsContent>
-      <TabsContent value="receipts" className="mt-4">
+      <TabsContent value="receipts" id="receipts" className="mt-4">
         <ReceiptsTab />
       </TabsContent>
-      <TabsContent value="analytics" className="mt-4">
+      <TabsContent value="analytics" id="analytics" className="mt-4">
         <AnalyticsTab />
       </TabsContent>
-      <TabsContent value="chatbot" className="mt-4">
+      <TabsContent value="chatbot" id="chatbot" className="mt-4">
         <ChatbotTab />
       </TabsContent>
     </Tabs>
