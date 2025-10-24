@@ -4,6 +4,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
