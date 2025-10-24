@@ -14,13 +14,13 @@ export default function SignupPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="text-sm">
-                    <div className="mb-2">
-                        <p className="font-semibold">Agent:</p>
+                    <div className="mb-4">
+                        <p className="font-semibold text-base">Agent Role</p>
                         <p>Email: <span className="font-mono">agent@agrosage.com</span></p>
                         <p>Password: <span className="font-mono">password123</span></p>
                     </div>
                     <div>
-                        <p className="font-semibold">Government:</p>
+                        <p className="font-semibold text-base">Government Role</p>
                         <p>Email: <span className="font-mono">government@agrosage.com</span></p>
                         <p>Password: <span className="font-mono">password123</span></p>
                     </div>
