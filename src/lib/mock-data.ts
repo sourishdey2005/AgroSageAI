@@ -574,4 +574,39 @@ export const mockIrrigationData = [
     { day: addDays(today, 0), planned: 6200, actual: 6200 },
 ];
 
+export const mockRegionalData = [
+    {
+      region: 'Maharashtra',
+      crop: 'Tomato',
+      diseaseOutbreaks: 5,
+      priceTrend: 'Stable',
+    },
+    {
+      region: 'Uttar Pradesh',
+      crop: 'Wheat',
+      diseaseOutbreaks: 2,
+      priceTrend: 'Increasing',
+    },
+    {
+      region: 'Punjab',
+      crop: 'Rice',
+      diseaseOutbreaks: 1,
+      priceTrend: 'Decreasing',
+    },
+    {
+      region: 'West Bengal',
+      crop: 'Potato',
+      diseaseOutbreaks: 8,
+      priceTrend: 'Stable',
+    },
+];
+
+export const mockCropDistribution: { region: string, crop: string, diseaseSeverity: 'Low' | 'Medium' | 'High' | 'Critical' }[] = [
+    { region: 'Punjab', crop: 'Wheat', diseaseSeverity: 'Low' },
+    { region: 'Maharashtra', crop: 'Sugarcane', diseaseSeverity: 'High' },
+    { region: 'Andhra Pradesh', crop: 'Rice', diseaseSeverity: 'Medium' },
+    { region: 'Karnataka', crop: 'Coffee', diseaseSeverity: 'Low' },
+    { region: 'Gujarat', crop: 'Cotton', diseaseSeverity: 'Critical' },
+];
+
     

@@ -4,8 +4,38 @@
 import CropHealthRadar from '@/components/dashboard/crop-health-radar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AreaChart, Bot, Leaf, LineChart, Receipt } from 'lucide-react';
+import { AreaChart, Bot, Leaf, LineChart, Receipt, Bell, AlertTriangle, TrendingUp as TrendingUpIcon, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+
+const alerts = [
+    {
+        id: 'alert-1',
+        type: 'disease',
+        title: 'Leaf Curl Detected',
+        description: 'High confidence detection in Zone A3. Immediate action recommended.',
+        actionText: 'View Details',
+        actionLink: '/dashboard/crop-health',
+        icon: <AlertTriangle className="h-5 w-5 text-destructive" />
+    },
+    {
+        id: 'alert-2',
+        type: 'market',
+        title: 'New Market High for Tomato!',
+        description: 'Tomato prices in Pune Mandi have reached a 30-day high. Consider selling now.',
+        actionText: 'Analyze Market',
+        actionLink: '/dashboard/market-insights',
+        icon: <TrendingUpIcon className="h-5 w-5 text-green-500" />
+    },
+     {
+        id: 'alert-3',
+        type: 'system',
+        title: 'Treatment Overdue',
+        description: 'Next dose of Copper Fungicide is overdue by 2 days.',
+        actionText: 'View Timeline',
+        actionLink: '/dashboard/crop-health',
+        icon: <Bell className="h-5 w-5 text-yellow-500" />
+    },
+]
 
 export default function DashboardPage() {
   return (
@@ -19,8 +49,33 @@ export default function DashboardPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-2">
           <CropHealthRadar />
+        </div>
+        <div className="lg:col-span-1">
+             <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Bell /> Real-Time Alerts</CardTitle>
+                    <CardDescription>Immediate notifications for your farm.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {alerts.map(alert => (
+                        <div key={alert.id} className="flex items-start gap-4 p-3 rounded-lg border bg-background/50">
+                            <div>{alert.icon}</div>
+                            <div className="flex-1">
+                                <p className="font-semibold">{alert.title}</p>
+                                <p className="text-xs text-muted-foreground">{alert.description}</p>
+                            </div>
+                            <Button variant="ghost" size="sm" asChild>
+                                <Link href={alert.actionLink}>
+                                    <span className="hidden sm:inline">{alert.actionText}</span>
+                                    <ArrowRight className="h-4 w-4 sm:ml-2" />
+                                </Link>
+                            </Button>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
