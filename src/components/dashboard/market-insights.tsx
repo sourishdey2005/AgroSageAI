@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -13,8 +14,8 @@ import { crops, mandis } from '@/lib/data';
 import { analyzeMarketPriceTrend, type MarketPriceTrendOutput } from '@/ai/flows/market-price-trend-analysis';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Calendar as CalendarIcon, MapPin, TrendingUp, BarChart } from 'lucide-react';
-import { ChartContainer, ChartConfig, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
-import { Area, AreaChart, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { ChartContainer, ChartConfig, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 
 const formSchema = z.object({
   crop: z.string().min(1, 'Please select a crop.'),
@@ -195,7 +196,11 @@ export default function MarketInsightsTab() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {result ? (
+            {isLoading ? (
+                <div className="flex items-center justify-center h-[250px]">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            ) : result ? (
               <ChartContainer config={chartConfig} className="h-[250px] w-full">
                 <AreaChart
                   data={chartData}
@@ -251,5 +256,3 @@ export default function MarketInsightsTab() {
     </div>
   );
 }
-
-    
