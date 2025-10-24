@@ -1,4 +1,5 @@
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -7,6 +8,26 @@ export type MockDiagnosis = {
   timestamp: string;
 };
 
+export type MockTreatment = {
+    id: string;
+    pesticide: string;
+    diseaseTarget: string;
+    lastDose: string;
+    nextDose: string;
+};
+
+export type MockTransaction = {
+    id: string;
+    cropName: string;
+    date: string;
+    mandi: string;
+    yield: number; // in kg
+    forecastedPrice: number; // per kg
+    actualPrice: number; // per kg
+    forecastedProfit: number;
+    actualProfit: number;
+};
+  
 // Generate 50+ mock data points
 export const mockDiagnoses: MockDiagnosis[] = [
   {
@@ -367,3 +388,99 @@ export const mockDiagnoses: MockDiagnosis[] = [
     timestamp: '2024-07-18T15:00:00Z',
   },
 ];
+
+const today = new Date();
+const addDays = (date: Date, days: number) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + days);
+    return newDate.toISOString();
+}
+
+export const mockTreatments: MockTreatment[] = [
+    {
+        id: 'treat_001',
+        pesticide: 'Neem Oil Spray',
+        diseaseTarget: 'Powdery Mildew, Aphids',
+        lastDose: addDays(today, -10),
+        nextDose: addDays(today, 4),
+    },
+    {
+        id: 'treat_002',
+        pesticide: 'Copper Fungicide',
+        diseaseTarget: 'Bacterial Blight, Downy Mildew',
+        lastDose: addDays(today, -5),
+        nextDose: addDays(today, 9),
+    },
+    {
+        id: 'treat_003',
+        pesticide: 'Spinosad',
+        diseaseTarget: 'Caterpillars, Thrips',
+        lastDose: addDays(today, -2),
+        nextDose: addDays(today, 12),
+    },
+    {
+        id: 'treat_004',
+        pesticide: 'Bacillus thuringiensis (Bt)',
+        diseaseTarget: 'Tomato Hornworm',
+        lastDose: addDays(today, -20),
+        nextDose: addDays(today, -6), // Overdue
+    }
+];
+
+export const mockTransactions: MockTransaction[] = [
+    { 
+        id: 'txn_001', 
+        cropName: 'Tomato', 
+        date: '2023-10-25', 
+        mandi: 'Pune', 
+        yield: 5000, 
+        forecastedPrice: 54,
+        actualPrice: 58,
+        forecastedProfit: 270000,
+        actualProfit: 290000,
+    },
+    { 
+        id: 'txn_002', 
+        cropName: 'Wheat', 
+        date: '2023-10-22', 
+        mandi: 'Lucknow',
+        yield: 8000,
+        forecastedPrice: 22,
+        actualPrice: 21,
+        forecastedProfit: 176000,
+        actualProfit: 168000,
+    },
+    { 
+        id: 'txn_003', 
+        cropName: 'Rice', 
+        date: '2023-10-20', 
+        mandi: 'Nagpur', 
+        yield: 7500,
+        forecastedPrice: 35,
+        actualPrice: 38,
+        forecastedProfit: 262500,
+        actualProfit: 285000,
+    },
+    {
+        id: 'txn_004',
+        cropName: 'Onion',
+        date: '2023-10-18',
+        mandi: 'Delhi',
+        yield: 6000,
+        forecastedPrice: 30,
+        actualPrice: 35,
+        forecastedProfit: 180000,
+        actualProfit: 210000,
+    },
+    {
+        id: 'txn_005',
+        cropName: 'Potato',
+        date: '2023-10-15',
+        mandi: 'Mumbai',
+        yield: 10000,
+        forecastedPrice: 18,
+        actualPrice: 17.5,
+        forecastedProfit: 180000,
+        actualProfit: 175000,
+    }
+  ];

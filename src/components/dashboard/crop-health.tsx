@@ -7,14 +7,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Upload, AlertCircle, Sparkles, History, Camera } from 'lucide-react';
+import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { getCropDiseaseTreatmentSuggestion } from '@/ai/flows/crop-disease-treatment-suggestion';
 import { useToast } from '@/hooks/use-toast';
-import { mockDiagnoses, type MockDiagnosis } from '@/lib/mock-data';
+import { mockDiagnoses, type MockDiagnosis, mockTreatments, type MockTreatment } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { differenceInDays, format, formatDistanceToNowStrict } from 'date-fns';
 
 type AnalysisResult = {
   diseaseName: string;
@@ -28,6 +29,36 @@ const getConfidenceColor = (confidence: number) => {
   if (confidence > 0.75) return 'bg-orange-500';
   return 'bg-yellow-500';
 };
+
+const TreatmentTimelineItem = ({ treatment, isLast }: { treatment: MockTreatment, isLast: boolean }) => {
+    const nextDoseDate = new Date(treatment.nextDose);
+    const now = new Date();
+    const isOverdue = nextDoseDate < now;
+    const daysUntilNext = differenceInDays(nextDoseDate, now);
+  
+    return (
+      <div className="flex gap-4">
+        <div className="flex flex-col items-center">
+          <div className={cn("rounded-full h-8 w-8 flex items-center justify-center", isOverdue ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground")}>
+            <SprayCan className="h-4 w-4" />
+          </div>
+          {!isLast && <div className="w-px h-full bg-border flex-grow" />}
+        </div>
+        <div className="pb-8 flex-1">
+          <p className="font-semibold">{treatment.pesticide}</p>
+          <p className="text-sm text-muted-foreground">{treatment.diseaseTarget}</p>
+          <div className="text-sm mt-1 flex items-center gap-2">
+            <Clock className="h-4 w-4" />
+            {isOverdue ? (
+               <span className="text-destructive font-semibold">Overdue by {formatDistanceToNowStrict(nextDoseDate)}</span>
+            ) : (
+               <span>Next dose in <span className="font-semibold">{formatDistanceToNowStrict(nextDoseDate)}</span> ({format(nextDoseDate, 'MMM d')})</span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
 export default function CropHealthTab() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -121,71 +152,86 @@ export default function CropHealthTab() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Camera /> Crop Health Monitor</CardTitle>
-          <CardDescription>Upload an image of your crop to detect diseases and get treatment suggestions.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-6">
-          <div className="flex flex-col items-center justify-center gap-4 p-4 border-2 border-dashed border-border rounded-lg">
-            <div className="relative w-full max-w-[400px] aspect-video rounded-md overflow-hidden bg-muted">
-              <Image
-                src={imagePreview || cropPlaceholder?.imageUrl || ''}
-                alt="Crop preview"
-                fill
-                className="object-contain"
-                data-ai-hint={cropPlaceholder?.imageHint}
-              />
+      <div className="grid lg:grid-cols-2 gap-6">
+         <Card>
+            <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Camera /> Crop Health Monitor</CardTitle>
+            <CardDescription>Upload an image of your crop to detect diseases and get treatment suggestions.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-6">
+            <div className="flex flex-col items-center justify-center gap-4 p-4 border-2 border-dashed border-border rounded-lg">
+                <div className="relative w-full max-w-[400px] aspect-video rounded-md overflow-hidden bg-muted">
+                <Image
+                    src={imagePreview || cropPlaceholder?.imageUrl || ''}
+                    alt="Crop preview"
+                    fill
+                    className="object-contain"
+                    data-ai-hint={cropPlaceholder?.imageHint}
+                />
+                </div>
+                <div className="w-full max-w-xs grid grid-cols-1 md:grid-cols-2 gap-2">
+                <Button asChild variant="outline">
+                    <label htmlFor="crop-image-upload" className="cursor-pointer">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Image
+                    </label>
+                </Button>
+                <Input id="crop-image-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                <Button onClick={handleAnalyze} disabled={isLoading || !imageFile}>
+                    {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    )}
+                    Analyze
+                </Button>
+                </div>
             </div>
-            <div className="w-full max-w-xs grid grid-cols-1 md:grid-cols-2 gap-2">
-              <Button asChild variant="outline">
-                <label htmlFor="crop-image-upload" className="cursor-pointer">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload Image
-                </label>
-              </Button>
-              <Input id="crop-image-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-              <Button onClick={handleAnalyze} disabled={isLoading || !imageFile}>
+            <div className="flex flex-col gap-4">
+                <h3 className="text-lg font-semibold">Analysis Result</h3>
                 {isLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <div className="flex items-center justify-center h-full">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+                ) : result ? (
+                <Card className="bg-background/50">
+                    <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <AlertCircle className="text-destructive" />
+                        {result.diseaseName} Detected
+                    </CardTitle>
+                    <CardDescription>Confidence: {(result.confidence * 100).toFixed(0)}% | Severity: {result.severity}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                    <Alert>
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <AlertTitle className="font-bold">AI Treatment Suggestion</AlertTitle>
+                        <AlertDescription>{result.treatment}</AlertDescription>
+                    </Alert>
+                    </CardContent>
+                </Card>
                 ) : (
-                  <Sparkles className="mr-2 h-4 w-4" />
+                <div className="flex items-center justify-center h-full text-muted-foreground p-8 text-center border-2 border-dashed rounded-lg">
+                    <p>Your analysis results will appear here.</p>
+                </div>
                 )}
-                Analyze
-              </Button>
             </div>
-          </div>
-          <div className="flex flex-col gap-4">
-            <h3 className="text-lg font-semibold">Analysis Result</h3>
-            {isLoading ? (
-              <div className="flex items-center justify-center h-full">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </div>
-            ) : result ? (
-              <Card className="bg-background/50">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertCircle className="text-destructive" />
-                    {result.diseaseName} Detected
-                  </CardTitle>
-                  <CardDescription>Confidence: {(result.confidence * 100).toFixed(0)}% | Severity: {result.severity}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Alert>
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    <AlertTitle className="font-bold">AI Treatment Suggestion</AlertTitle>
-                    <AlertDescription>{result.treatment}</AlertDescription>
-                  </Alert>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground p-8 text-center border-2 border-dashed rounded-lg">
-                <p>Your analysis results will appear here.</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader>
+                <CardTitle>💊 Treatment Timeline</CardTitle>
+                <CardDescription>Recommended pesticide schedule and countdown to the next application.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            <ScrollArea className="h-96">
+                {mockTreatments.map((treatment, index) => (
+                    <TreatmentTimelineItem key={treatment.id} treatment={treatment} isLast={index === mockTreatments.length - 1} />
+                ))}
+            </ScrollArea>
+            </CardContent>
+        </Card>
+      </div>
       
       <Card>
         <CardHeader>

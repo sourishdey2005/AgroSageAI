@@ -1,110 +1,101 @@
+
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { generateYieldAndProfitReceipt } from '@/ai/flows/yield-and-profit-receipt';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Download, FileText, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Download, FileText } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { generateYieldAndProfitReceipt } from '@/ai/flows/yield-and-profit-receipt';
+import {
+  ChartContainer,
+  ChartConfig,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { mockTransactions, type MockTransaction } from '@/lib/mock-data';
 
-const formSchema = z.object({
-  cropName: z.string().min(1, 'Crop name is required.'),
-  predictedYield: z.coerce.number().positive('Yield must be a positive number.'),
-  predictedPrice: z.coerce.number().positive('Price must be a positive number.'),
-  bestSellDate: z.string().min(1, 'Sell date is required.'),
-  recommendedMandi: z.string().min(1, 'Mandi is required.'),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
-const mockTransactions = [
-  { id: 'txn_001', cropName: 'Tomato', date: '2023-10-25', mandi: 'Pune', status: 'Generated' },
-  { id: 'txn_002', cropName: 'Wheat', date: '2023-10-22', mandi: 'Lucknow', status: 'Generated' },
-  { id: 'txn_003', cropName: 'Rice', date: '2023-10-20', mandi: 'Nagpur', status: 'Generated' },
-];
+const chartConfig = {
+  forecastedProfit: {
+    label: 'Forecasted Profit',
+    color: 'hsl(var(--chart-2))',
+  },
+  actualProfit: {
+    label: 'Actual Profit',
+    color: 'hsl(var(--chart-1))',
+  },
+} satisfies ChartConfig;
 
 export default function ReceiptsTab() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState<string | null>(null);
+  const [selectedTx, setSelectedTx] = useState<MockTransaction>(mockTransactions[0]);
   const { toast } = useToast();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { cropName: 'Tomato', predictedYield: 5000, predictedPrice: 54, bestSellDate: 'Oct 29', recommendedMandi: 'Pune' },
-  });
-
-  const onSubmit = async (values: FormValues) => {
-    setIsLoading(true);
+  const handleGeneratePdf = async (tx: MockTransaction) => {
+    setIsGenerating(tx.id);
     try {
-      const { receipt: base64Pdf } = await generateYieldAndProfitReceipt(values);
-      
+      const { receipt: base64Pdf } = await generateYieldAndProfitReceipt({
+        cropName: tx.cropName,
+        predictedYield: tx.yield,
+        predictedPrice: tx.forecastedPrice,
+        bestSellDate: new Date(tx.date).toLocaleDateString(),
+        recommendedMandi: tx.mandi,
+      });
+
       const link = document.createElement('a');
       link.href = `data:application/pdf;base64,${base64Pdf}`;
-      link.download = `AgroSage_Receipt_${values.cropName}_${new Date().toISOString().split('T')[0]}.pdf`;
+      link.download = `AgroSage_Receipt_${tx.cropName}_${tx.date}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
       toast({
-        title: 'Receipt Generated',
-        description: 'Your PDF receipt has been downloaded.',
+        title: 'Receipt Downloaded',
+        description: `The receipt for ${tx.cropName} has been downloaded.`,
       });
-
     } catch (error) {
       console.error('Error generating receipt:', error);
       toast({
         variant: 'destructive',
         title: 'Generation Failed',
-        description: 'Could not generate the PDF receipt from the AI.',
+        description: 'Could not generate the PDF receipt.',
       });
     } finally {
-      setIsLoading(false);
+      setIsGenerating(null);
     }
   };
 
+  const chartData = [
+    {
+      label: 'Profit (₹)',
+      forecastedProfit: selectedTx.forecastedProfit,
+      actualProfit: selectedTx.actualProfit,
+    },
+  ];
+
   return (
     <div className="grid lg:grid-cols-3 gap-6">
-      <Card className="lg:col-span-1">
-        <CardHeader>
-          <CardTitle>Yield & Profit Forecast</CardTitle>
-          <CardDescription>Generate a digital PDF receipt with your predicted earnings.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-              <FormField control={form.control} name="cropName" render={({ field }) => (
-                <FormItem><FormLabel>Crop Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="predictedYield" render={({ field }) => (
-                <FormItem><FormLabel>Predicted Yield (kg/acre)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="predictedPrice" render={({ field }) => (
-                <FormItem><FormLabel>Predicted Price (₹/kg)</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="bestSellDate" render={({ field }) => (
-                <FormItem><FormLabel>Best Sell Date</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <FormField control={form.control} name="recommendedMandi" render={({ field }) => (
-                <FormItem><FormLabel>Recommended Mandi</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
-              )} />
-              <Button type="submit" disabled={isLoading} className="w-full !mt-6">
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                Generate & Download PDF
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-      
       <Card className="lg:col-span-2">
         <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
-          <CardDescription>A list of your recently generated receipts.</CardDescription>
+          <CardTitle>🧾 Digital Receipt Vault</CardTitle>
+          <CardDescription>
+            An interactive list of your past crop sales.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -113,25 +104,102 @@ export default function ReceiptsTab() {
                 <TableHead>Crop</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Mandi</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {mockTransactions.map((tx) => (
-                <TableRow key={tx.id}>
+                <TableRow
+                  key={tx.id}
+                  onClick={() => setSelectedTx(tx)}
+                  className="cursor-pointer"
+                  data-state={selectedTx.id === tx.id ? 'selected' : ''}
+                >
                   <TableCell className="font-medium">{tx.cropName}</TableCell>
-                  <TableCell>{tx.date}</TableCell>
+                  <TableCell>{new Date(tx.date).toLocaleDateString()}</TableCell>
                   <TableCell>{tx.mandi}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="outline" size="sm">
+                     <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedTx(tx);
+                      }}
+                      className="mr-2"
+                    >
                       <FileText className="mr-2 h-4 w-4" />
                       View
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                         e.stopPropagation();
+                         handleGeneratePdf(tx)
+                        }}
+                      disabled={isGenerating === tx.id}
+                    >
+                      {isGenerating === tx.id ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Download className="mr-2 h-4 w-4" />
+                      )}
+                      PDF
                     </Button>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Profit Analysis</CardTitle>
+          <CardDescription>
+            Forecast vs. Actual for{' '}
+            <span className="font-bold text-primary">{selectedTx.cropName}</span> on{' '}
+            {new Date(selectedTx.date).toLocaleDateString()}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="rounded-lg border p-4">
+                    <p className="text-sm text-muted-foreground">Forecasted Profit</p>
+                    <p className="text-2xl font-bold">₹{selectedTx.forecastedProfit.toLocaleString()}</p>
+                </div>
+                 <div className="rounded-lg border p-4">
+                    <p className="text-sm text-muted-foreground">Actual Profit</p>
+                    <p className="text-2xl font-bold">₹{selectedTx.actualProfit.toLocaleString()}</p>
+                </div>
+            </div>
+          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+            <BarChart accessibilityLayer data={chartData} margin={{left: -20, right: 20}}>
+              <CartesianGrid vertical={false} />
+              <YAxis tickLine={false} axisLine={false} />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} hide />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Bar dataKey="forecastedProfit" fill="var(--color-forecastedProfit)" radius={4} />
+              <Bar dataKey="actualProfit" fill="var(--color-actualProfit)" radius={4} />
+            </BarChart>
+          </ChartContainer>
+            <div className="flex items-center justify-center gap-2 text-sm">
+                {selectedTx.actualProfit >= selectedTx.forecastedProfit ? (
+                    <TrendingUp className="h-5 w-5 text-green-500" />
+                ) : (
+                    <TrendingDown className="h-5 w-5 text-red-500" />
+                )}
+                <p>
+                    {selectedTx.actualProfit >= selectedTx.forecastedProfit ? 'Exceeded' : 'Below'} forecast by{' '}
+                    <span className="font-bold">
+                        ₹{Math.abs(selectedTx.actualProfit - selectedTx.forecastedProfit).toLocaleString()}
+                    </span>
+                </p>
+           </div>
         </CardContent>
       </Card>
     </div>
