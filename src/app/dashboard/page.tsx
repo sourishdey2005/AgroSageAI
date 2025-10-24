@@ -4,8 +4,12 @@
 import CropHealthRadar from '@/components/dashboard/crop-health-radar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AreaChart, Bot, Leaf, LineChart, Receipt, Bell, AlertTriangle, TrendingUp as TrendingUpIcon, ArrowRight } from 'lucide-react';
+import { AreaChart, Bot, Leaf, LineChart, Receipt, Bell, AlertTriangle, TrendingUp as TrendingUpIcon, ArrowRight, BookText, Compass } from 'lucide-react';
 import Link from 'next/link';
+import { generateWeeklyReport } from '@/ai/flows/weekly-report-flow';
+import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import RiskCompass from '@/components/dashboard/risk-compass';
 
 const alerts = [
     {
@@ -38,6 +42,30 @@ const alerts = [
 ]
 
 export default function DashboardPage() {
+    const [weeklySummary, setWeeklySummary] = useState('');
+    const [isSummaryLoading, setIsSummaryLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSummary = async () => {
+            try {
+                const response = await generateWeeklyReport({
+                    currentWeekPerformance: 15,
+                    previousWeekPerformance: -5,
+                    topPerformingCrop: 'Tomato',
+                    cropPerformance: 25,
+                });
+                setWeeklySummary(response.summary);
+            } catch (error) {
+                console.error("Error generating weekly summary:", error);
+                setWeeklySummary("Could not load AI summary. Please try again later.");
+            } finally {
+                setIsSummaryLoading(false);
+            }
+        };
+
+        fetchSummary();
+    }, []);
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
@@ -49,9 +77,35 @@ export default function DashboardPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <CropHealthRadar />
-        </div>
+         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+           <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><BookText /> AI Narrative Summary</CardTitle>
+                    <CardDescription>Your weekly farm performance report.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {isSummaryLoading ? (
+                        <div className="flex items-center justify-center h-24">
+                            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                        </div>
+                    ) : (
+                        <p className="text-sm">{weeklySummary}</p>
+                    )}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Compass /> Risk Compass</CardTitle>
+                    <CardDescription>Financial, disease, and weather risk factors.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <RiskCompass />
+                </CardContent>
+            </Card>
+            <div className="md:col-span-2">
+                <CropHealthRadar />
+            </div>
+         </div>
         <div className="lg:col-span-1">
              <Card>
                 <CardHeader>

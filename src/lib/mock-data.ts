@@ -3,6 +3,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -690,6 +691,11 @@ export const mockBenchmarkingData = [
     { crop: 'Potato', yourYield: 15000, districtAverage: 14000 },
 ];
     
-
+export const mockRiskData = [
+    { metric: 'Financial', value: 40 },
+    { metric: 'Disease', value: 75 },
+    { metric: 'Weather', value: 60 },
+    { metric: 'Market', value: 80 },
+    { metric: 'Pest', value: 55 },
+];
     
-
