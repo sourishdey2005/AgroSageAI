@@ -1,7 +1,4 @@
 
-
-
-
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -555,3 +552,15 @@ export const mockTransactions: MockTransaction[] = [
     { month: 'Sep', yield: 4900, rainfall: 150, temp: 31 },
     { month: 'Oct', yield: 5300, rainfall: 100, temp: 33 },
   ];
+
+export const mockDailyPerformance = [
+    { date: addDays(today, -6), healthy: 92.5 },
+    { date: addDays(today, -5), healthy: 91.0 },
+    { date: addDays(today, -4), healthy: 93.2 },
+    { date: addDays(today, -3), healthy: 94.8 },
+    { date: addDays(today, -2), healthy: 95.1 },
+    { date: addDays(today, -1), healthy: 96.5 },
+    { date: addDays(today, 0), healthy: 97.0 },
+];
+
+    

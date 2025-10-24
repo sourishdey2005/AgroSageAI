@@ -7,18 +7,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock, PieChart as PieChartIcon, Map } from 'lucide-react';
+import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock, PieChart as PieChartIcon, Map, LineChart, Sliders } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { getCropDiseaseTreatmentSuggestion } from '@/ai/flows/crop-disease-treatment-suggestion';
 import { useToast } from '@/hooks/use-toast';
-import { mockDiagnoses, type MockDiagnosis, mockTreatments, type MockTreatment } from '@/lib/mock-data';
+import { mockDiagnoses, type MockDiagnosis, mockTreatments, type MockTreatment, mockDailyPerformance } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { format, formatDistanceToNowStrict } from 'date-fns';
-import { Pie, PieChart, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { Pie, PieChart, Cell, ResponsiveContainer, Legend, Line, XAxis, YAxis, CartesianGrid, ComposedChart, Bar } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Slider } from '../ui/slider';
+import { Label } from '../ui/label';
 
 type AnalysisResult = {
   diseaseName: string;
@@ -93,7 +95,7 @@ const DiseaseFrequencyChart = () => {
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                     </Pie>
-                    <Legend wrapperStyle={{fontSize: "12px"}}/>
+                    <Legend wrapperStyle={{fontSize: "12px", bottom: -10}}/>
                 </PieChart>
             </ResponsiveContainer>
         </ChartContainer>
@@ -162,6 +164,79 @@ const DiseaseHotspotMap = () => {
                 })}
             </div>
       </TooltipProvider>
+    );
+};
+
+const DailyFarmPerformanceGraph = () => {
+    const chartConfig = {
+        healthy: { label: '% Healthy', color: 'hsl(var(--chart-2))' },
+    };
+
+    return (
+        <ChartContainer config={chartConfig} className="h-[250px] w-full">
+            <ComposedChart data={mockDailyPerformance}>
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="date" tickFormatter={(val) => format(new Date(val), 'MMM d')} stroke="" />
+                <YAxis domain={[80, 100]} tickFormatter={(val) => `${val}%`} stroke="" />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <defs>
+                    <linearGradient id="colorHealthy" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
+                    </linearGradient>
+                </defs>
+                <Bar dataKey="healthy" fill="url(#colorHealthy)" />
+            </ComposedChart>
+        </ChartContainer>
+    );
+}
+
+const AutoFertilizerEstimator = () => {
+    const [area, setArea] = useState(5); // Default 5 acres
+    const [cropType, setCropType] = useState('tomato'); // Default crop
+
+    // N-P-K recommendation per acre for different crops (in kg)
+    const recommendations = {
+        tomato: { N: 60, P: 40, K: 40 },
+        wheat: { N: 50, P: 25, K: 15 },
+        rice: { N: 45, P: 25, K: 25 },
+        potato: { N: 80, P: 50, K: 100 },
+    };
+
+    const estimate = recommendations[cropType as keyof typeof recommendations];
+    const totalN = (estimate.N * area).toFixed(1);
+    const totalP = (estimate.P * area).toFixed(1);
+    const totalK = (estimate.K * area).toFixed(1);
+
+    return (
+        <div className="space-y-6">
+            <div>
+                <Label htmlFor="area-slider">Farm Area: {area} acres</Label>
+                <Slider
+                    id="area-slider"
+                    min={1}
+                    max={50}
+                    step={1}
+                    value={[area]}
+                    onValueChange={(value) => setArea(value[0])}
+                    className="mt-2"
+                />
+            </div>
+            <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="rounded-lg border bg-card p-4">
+                    <p className="text-sm font-medium text-muted-foreground">Nitrogen (N)</p>
+                    <p className="text-2xl font-bold text-primary">{totalN} kg</p>
+                </div>
+                <div className="rounded-lg border bg-card p-4">
+                    <p className="text-sm font-medium text-muted-foreground">Phosphorus (P)</p>
+                    <p className="text-2xl font-bold text-accent">{totalP} kg</p>
+                </div>
+                <div className="rounded-lg border bg-card p-4">
+                    <p className="text-sm font-medium text-muted-foreground">Potassium (K)</p>
+                    <p className="text-2xl font-bold text-chart-2">{totalK} kg</p>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -383,6 +458,26 @@ export default function CropHealthTab() {
             </Card>
         </div>
         <div className="grid lg:grid-cols-2 gap-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><LineChart /> Daily Farm Performance</CardTitle>
+                    <CardDescription>Percentage of healthy crops over the last 7 days.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <DailyFarmPerformanceGraph />
+                </CardContent>
+            </Card>
+             <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Sliders /> Auto-Fertilizer Estimator</CardTitle>
+                    <CardDescription>Estimate N-P-K needs based on your farm size for a Tomato crop.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <AutoFertilizerEstimator />
+                </CardContent>
+            </Card>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-6">
              <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><PieChartIcon /> Disease Frequency Analysis</CardTitle>
@@ -405,3 +500,5 @@ export default function CropHealthTab() {
     </div>
   );
 }
+
+    
