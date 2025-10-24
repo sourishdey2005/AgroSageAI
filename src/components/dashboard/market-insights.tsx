@@ -13,9 +13,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { crops, mandis } from '@/lib/data';
 import { analyzeMarketPriceTrend, type MarketPriceTrendOutput } from '@/ai/flows/market-price-trend-analysis';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Calendar as CalendarIcon, MapPin, TrendingUp, BarChart } from 'lucide-react';
+import { Loader2, Sparkles, Calendar as CalendarIcon, MapPin, TrendingUp, BarChart, Map, CalendarDays, IndianRupee } from 'lucide-react';
 import { ChartContainer, ChartConfig, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Calendar } from '../ui/calendar';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { addDays, format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   crop: z.string().min(1, 'Please select a crop.'),
@@ -29,6 +34,7 @@ export default function MarketInsightsTab() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<MarketPriceTrendOutput | null>(null);
   const { toast } = useToast();
+  const mapPlaceholder = PlaceHolderImages.find((img) => img.id === 'map-placeholder');
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -80,6 +86,34 @@ export default function MarketInsightsTab() {
       color: 'hsl(var(--primary))',
     },
   } satisfies ChartConfig;
+
+  // Calendar Heatmap Logic
+  const today = new Date();
+  const priceTrend = result?.predictedPriceTrend || [];
+  const minPrice = priceTrend.length > 0 ? Math.min(...priceTrend) : 0;
+  const maxPrice = priceTrend.length > 0 ? Math.max(...priceTrend) : 0;
+
+  const getDayStyle = (date: Date): React.CSSProperties => {
+    const dayIndex = Math.round((date.getTime() - today.getTime()) / (1000 * 3600 * 24));
+    if (dayIndex >= 0 && dayIndex < priceTrend.length) {
+      const price = priceTrend[dayIndex];
+      const intensity = maxPrice > minPrice ? (price - minPrice) / (maxPrice - minPrice) : 0.5;
+      return {
+        '--bg-accent-intensity': `hsl(var(--primary) / ${intensity * 0.8})`,
+        '--text-accent-intensity': `hsl(var(--primary-foreground))`,
+      } as React.CSSProperties;
+    }
+    return {};
+  };
+
+  const dayClassNames = (date: Date): string => {
+    const dayIndex = Math.round((date.getTime() - today.getTime()) / (1000 * 3600 * 24));
+    if (dayIndex >= 0 && dayIndex < priceTrend.length) {
+      return 'bg-[var(--bg-accent-intensity)] text-[var(--text-accent-intensity)] rounded-md';
+    }
+    return '';
+  };
+
 
   return (
     <div className="grid lg:grid-cols-3 gap-6">
@@ -225,8 +259,9 @@ export default function MarketInsightsTab() {
                     axisLine={false}
                     tickMargin={8}
                     domain={['dataMin - 5', 'dataMax + 5']}
+                    tickFormatter={(value) => `₹${value}`}
                   />
-                  <Tooltip
+                  <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent indicator="dot" />}
                   />
@@ -252,6 +287,80 @@ export default function MarketInsightsTab() {
             )}
           </CardContent>
         </Card>
+        <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Map className="h-5 w-5 text-primary" /> Best Mandi Map</CardTitle>
+                    <CardDescription>Visual route to the most profitable market.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                {isLoading && <div className="flex items-center justify-center h-64"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
+                {!isLoading && !result && <div className="flex items-center justify-center h-64 text-muted-foreground text-center p-4 border-2 border-dashed rounded-lg">The map will appear here after analysis.</div>}
+                {result && mapPlaceholder && (
+                    <div className="relative aspect-video rounded-md overflow-hidden bg-muted">
+                        <Image
+                            src={mapPlaceholder.imageUrl}
+                            alt="Map to recommended mandi"
+                            fill
+                            className="object-cover"
+                            data-ai-hint={mapPlaceholder.imageHint}
+                        />
+                        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-4 text-white">
+                            <h4 className="text-lg font-bold text-accent">{result.recommendedMandi}</h4>
+                            <p className="text-sm">Best sell on {result.bestSellDate}</p>
+                            <Button variant="outline" size="sm" className="mt-4 bg-transparent text-white border-white hover:bg-white/10">View Route</Button>
+                        </div>
+                    </div>
+                )}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><CalendarDays className="h-5 w-5 text-primary" /> Sell Timing Calendar</CardTitle>
+                    <CardDescription>Heatmap showing the best days to sell your crop based on price.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {isLoading && <div className="flex items-center justify-center h-64"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
+                    {!isLoading && !result && <div className="flex items-center justify-center h-64 text-muted-foreground text-center p-4 border-2 border-dashed rounded-lg">The calendar heatmap will appear here.</div>}
+                    {result && (
+                        <div className="flex justify-center">
+                            <Calendar
+                                mode="single"
+                                selected={addDays(today, result.predictedPriceTrend.indexOf(Math.max(...result.predictedPriceTrend)))}
+                                fromDate={today}
+                                toDate={addDays(today, 6)}
+                                disabled={{ before: today, after: addDays(today, 6) }}
+                                classNames={{
+                                    day: "transition-colors",
+                                    day_disabled: "text-muted-foreground/50",
+                                }}
+                                modifiers={{
+                                    heatmap: (date) => {
+                                        const dayIndex = Math.round((date.getTime() - today.getTime()) / (1000 * 3600 * 24));
+                                        return dayIndex >= 0 && dayIndex < priceTrend.length;
+                                    }
+                                }}
+                                modifiersStyles={{
+                                    heatmap: getDayStyle,
+                                }}
+                                components={{
+                                    DayContent: ({ date, ...props }) => {
+                                        const dayIndex = Math.round((date.getTime() - today.getTime()) / (1000 * 3600 * 24));
+                                        const price = (dayIndex >= 0 && dayIndex < priceTrend.length) ? priceTrend[dayIndex] : null;
+                                        return (
+                                            <div className={cn("relative w-full h-full flex items-center justify-center", dayClassNames(date))}>
+                                                <span>{format(date, "d")}</span>
+                                                {price && <span className="absolute bottom-0.5 text-xs opacity-75">{price.toFixed(0)}</span>}
+                                            </div>
+                                        )
+                                    }
+                                }}
+                            />
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
       </div>
     </div>
   );
