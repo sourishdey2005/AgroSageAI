@@ -9,6 +9,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -769,3 +770,35 @@ export const mockInstantPrices = {
     'Watermelon': { price: 15, mandi: 'Delhi' },
     'Millet': { price: 30, mandi: 'Pune' },
 };
+
+export const mockFarmerQueries = [
+    {
+      id: 'query1',
+      farmerName: 'Anjali Sharma',
+      avatar: 'https://picsum.photos/seed/anjali/40/40',
+      query: 'I have a question about the leaf curl on my tomato plants. What is the best organic treatment?',
+      timestamp: '5m ago',
+    },
+    {
+      id: 'query2',
+      farmerName: 'Rajesh Kumar',
+      avatar: 'https://picsum.photos/seed/rajesh/40/40',
+      query: 'What is the current market rate for Grade A wheat in the Lucknow mandi?',
+      timestamp: '15m ago',
+    },
+    {
+      id: 'query3',
+      farmerName: 'Priya Singh',
+      avatar: 'https://picsum.photos/seed/priya/40/40',
+      query: 'My potato crop is showing signs of early blight. What should I do?',
+      timestamp: '1h ago',
+    },
+];
+
+export const mockLiveMandiData = [
+    { time: '9:00 AM', Pune: 52, Nagpur: 50, Lucknow: 55 },
+    { time: '10:00 AM', Pune: 53, Nagpur: 51, Lucknow: 54 },
+    { time: '11:00 AM', Pune: 54, Nagpur: 52, Lucknow: 56 },
+    { time: '12:00 PM', Pune: 55, Nagpur: 53, Lucknow: 55 },
+    { time: '1:00 PM', Pune: 54, Nagpur: 54, Lucknow: 57 },
+];

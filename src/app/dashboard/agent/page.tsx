@@ -3,7 +3,10 @@ import { QualityAssessment } from "@/components/dashboard/agent/quality-assessme
 import { MarketVolatility } from "@/components/dashboard/agent/market-volatility";
 import { LogisticsPlanner } from "@/components/dashboard/agent/logistics-planner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase } from "lucide-react";
+import { Briefcase, MessageSquare, BarChart, Map, Bot } from "lucide-react";
+import LiveMandiAnalyticsBoard from "@/components/dashboard/agent/live-mandi-analytics-board";
+import ProfitOpportunityMap from "@/components/dashboard/agent/profit-opportunity-map";
+import FarmerQueryChatPanel from "@/components/dashboard/agent/farmer-query-chat-panel";
 
 export default function AgentDashboardPage() {
     return (
@@ -16,8 +19,37 @@ export default function AgentDashboardPage() {
                     Market analysis, supply/demand, and logistics planning tools.
                 </p>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <Card className="lg:col-span-2">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><BarChart /> Live Mandi Analytics Board</CardTitle>
+                        <CardDescription>Real-time mandi price graph from multiple regions.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <LiveMandiAnalyticsBoard />
+                    </CardContent>
+                </Card>
+                <Card className="lg:col-span-1 row-span-2">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><Bot /> Farmer Query Chat Panel</CardTitle>
+                        <CardDescription>Handle disease or market queries from farmers directly.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[400px]">
+                        <FarmerQueryChatPanel />
+                    </CardContent>
+                </Card>
+                <Card className="lg:col-span-2">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><Map /> Profit Opportunity Map</CardTitle>
+                        <CardDescription>Identify where to buy/sell based on price differences.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ProfitOpportunityMap />
+                    </CardContent>
+                </Card>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                 <Card>
                     <CardHeader>
                         <CardTitle>Regional Supply & Demand</CardTitle>
                         <CardDescription>Visualize crop supply and market demand across different regions.</CardDescription>
@@ -44,7 +76,7 @@ export default function AgentDashboardPage() {
                         <MarketVolatility />
                     </CardContent>
                 </Card>
-                <Card className="lg:col-span-2">
+                <Card>
                     <CardHeader>
                         <CardTitle>Logistics Planner</CardTitle>
                         <CardDescription>Optimize transportation routes and storage solutions.</CardDescription>
