@@ -1,15 +1,20 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Upload, AlertCircle, Sparkles } from 'lucide-react';
+import { Loader2, Upload, AlertCircle, Sparkles, History, Camera } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { getCropDiseaseTreatmentSuggestion } from '@/ai/flows/crop-disease-treatment-suggestion';
 import { useToast } from '@/hooks/use-toast';
+import { mockDiagnoses, type MockDiagnosis } from '@/lib/mock-data';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 type AnalysisResult = {
   diseaseName: string;
@@ -18,12 +23,32 @@ type AnalysisResult = {
   treatment: string;
 };
 
+const getConfidenceColor = (confidence: number) => {
+  if (confidence > 0.9) return 'bg-red-500';
+  if (confidence > 0.75) return 'bg-orange-500';
+  return 'bg-yellow-500';
+};
+
 export default function CropHealthTab() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const { toast } = useToast();
+  const [diagnosisHistory, setDiagnosisHistory] = useState<MockDiagnosis[]>([]);
+
+  useEffect(() => {
+    // Simulate fetching recent diagnoses
+    setDiagnosisHistory(mockDiagnoses.slice(0, 5));
+
+    const interval = setInterval(() => {
+      // Simulate real-time updates by shuffling and slicing mock data
+      const shuffled = [...mockDiagnoses].sort(() => 0.5 - Math.random());
+      setDiagnosisHistory(shuffled.slice(0, 5));
+    }, 7000); // Refresh every 7 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -69,6 +94,17 @@ export default function CropHealthTab() {
         confidence: mockConfidence,
         treatment: treatmentResponse.treatmentSuggestion,
       });
+
+      // Add to history (in a real app, this would be persisted)
+      const newDiagnosis: MockDiagnosis = {
+        id: `diag_${Date.now()}`,
+        imageUrl: imagePreview,
+        disease: mockDiseaseName,
+        confidence: mockConfidence,
+        timestamp: new Date().toISOString(),
+      };
+      setDiagnosisHistory(prev => [newDiagnosis, ...prev.slice(0, 4)]);
+
     } catch (error) {
       console.error('Error getting treatment suggestion:', error);
       toast({
@@ -84,70 +120,114 @@ export default function CropHealthTab() {
   const cropPlaceholder = PlaceHolderImages.find((img) => img.id === 'crop-placeholder');
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Crop Health Monitor</CardTitle>
-        <CardDescription>Upload an image of your crop to detect diseases and get treatment suggestions.</CardDescription>
-      </CardHeader>
-      <CardContent className="grid md:grid-cols-2 gap-6">
-        <div className="flex flex-col items-center justify-center gap-4 p-4 border-2 border-dashed border-border rounded-lg">
-          <div className="relative w-full max-w-[400px] aspect-video rounded-md overflow-hidden bg-muted">
-            <Image
-              src={imagePreview || cropPlaceholder?.imageUrl || ''}
-              alt="Crop preview"
-              fill
-              className="object-contain"
-              data-ai-hint={cropPlaceholder?.imageHint}
-            />
-          </div>
-          <div className="w-full max-w-xs grid grid-cols-1 md:grid-cols-2 gap-2">
-            <Button asChild variant="outline">
-              <label htmlFor="crop-image-upload" className="cursor-pointer">
-                <Upload className="mr-2 h-4 w-4" />
-                Upload Image
-              </label>
-            </Button>
-            <Input id="crop-image-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-            <Button onClick={handleAnalyze} disabled={isLoading || !imageFile}>
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="mr-2 h-4 w-4" />
-              )}
-              Analyze
-            </Button>
-          </div>
-        </div>
-        <div className="flex flex-col gap-4">
-          <h3 className="text-lg font-semibold">Analysis Result</h3>
-          {isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    <div className="flex flex-col gap-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Camera /> Crop Health Monitor</CardTitle>
+          <CardDescription>Upload an image of your crop to detect diseases and get treatment suggestions.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-col items-center justify-center gap-4 p-4 border-2 border-dashed border-border rounded-lg">
+            <div className="relative w-full max-w-[400px] aspect-video rounded-md overflow-hidden bg-muted">
+              <Image
+                src={imagePreview || cropPlaceholder?.imageUrl || ''}
+                alt="Crop preview"
+                fill
+                className="object-contain"
+                data-ai-hint={cropPlaceholder?.imageHint}
+              />
             </div>
-          ) : result ? (
-            <Card className="bg-background/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertCircle className="text-destructive" />
-                  {result.diseaseName} Detected
-                </CardTitle>
-                <CardDescription>Confidence: {(result.confidence * 100).toFixed(0)}% | Severity: {result.severity}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Alert>
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  <AlertTitle className="font-bold">AI Treatment Suggestion</AlertTitle>
-                  <AlertDescription>{result.treatment}</AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="flex items-center justify-center h-full text-muted-foreground p-8 text-center border-2 border-dashed rounded-lg">
-              <p>Your analysis results will appear here.</p>
+            <div className="w-full max-w-xs grid grid-cols-1 md:grid-cols-2 gap-2">
+              <Button asChild variant="outline">
+                <label htmlFor="crop-image-upload" className="cursor-pointer">
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload Image
+                </label>
+              </Button>
+              <Input id="crop-image-upload" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+              <Button onClick={handleAnalyze} disabled={isLoading || !imageFile}>
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-4 w-4" />
+                )}
+                Analyze
+              </Button>
             </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+          <div className="flex flex-col gap-4">
+            <h3 className="text-lg font-semibold">Analysis Result</h3>
+            {isLoading ? (
+              <div className="flex items-center justify-center h-full">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : result ? (
+              <Card className="bg-background/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertCircle className="text-destructive" />
+                    {result.diseaseName} Detected
+                  </CardTitle>
+                  <CardDescription>Confidence: {(result.confidence * 100).toFixed(0)}% | Severity: {result.severity}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Alert>
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <AlertTitle className="font-bold">AI Treatment Suggestion</AlertTitle>
+                    <AlertDescription>{result.treatment}</AlertDescription>
+                  </Alert>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="flex items-center justify-center h-full text-muted-foreground p-8 text-center border-2 border-dashed rounded-lg">
+                <p>Your analysis results will appear here.</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><History /> 📸 AI Crop Diagnosis Panel</CardTitle>
+          <CardDescription>Last 5 uploaded images with YOLOv8 detection results and confidence levels.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className="w-full whitespace-nowrap">
+            <div className="flex w-max space-x-4 pb-4">
+              {diagnosisHistory.map((diag, index) => (
+                <Card key={diag.id + index} className="w-[250px] shrink-0 overflow-hidden">
+                  <div className="relative h-32 w-full">
+                     <Image
+                        src={diag.imageUrl}
+                        alt={`Diagnosis for ${diag.disease}`}
+                        fill
+                        className="object-cover"
+                      />
+                      <Badge variant="destructive" className="absolute top-2 right-2">{diag.disease}</Badge>
+                  </div>
+                  <CardContent className="p-3">
+                     <div className="flex flex-col gap-2">
+                       <p className="text-sm font-semibold">{diag.disease}</p>
+                       <div className="flex items-center gap-2">
+                         <div className="w-full bg-muted rounded-full h-2.5">
+                            <div 
+                              className={cn("h-2.5 rounded-full", getConfidenceColor(diag.confidence))}
+                              style={{ width: `${diag.confidence * 100}%` }}
+                            ></div>
+                         </div>
+                         <span className="text-xs font-mono text-muted-foreground">{ (diag.confidence * 100).toFixed(0) }%</span>
+                       </div>
+                       <p className="text-xs text-muted-foreground">{new Date(diag.timestamp).toLocaleString()}</p>
+                     </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
