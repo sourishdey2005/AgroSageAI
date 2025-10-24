@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,19 +11,80 @@ import { mockCommunityMessages } from '@/lib/mock-data';
 import { cn } from '@/lib/utils';
 import { Send, User } from 'lucide-react';
 
+type Message = {
+    id: number;
+    author: string;
+    avatar?: string;
+    text: string;
+    timestamp: string;
+    isCurrentUser: boolean;
+};
+
 export default function CommunityPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      const savedMessages = localStorage.getItem('community-messages');
+      if (savedMessages) {
+        setMessages(JSON.parse(savedMessages));
+      } else {
+        // Seed with mock data if local storage is empty
+        setMessages(mockCommunityMessages);
+        localStorage.setItem('community-messages', JSON.stringify(mockCommunityMessages));
+      }
+    } catch (error) {
+        console.error("Could not load messages from localStorage", error);
+        setMessages(mockCommunityMessages);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+        try {
+            localStorage.setItem('community-messages', JSON.stringify(messages));
+        } catch (error) {
+            console.error("Could not save messages to localStorage", error);
+        }
+    }
+     // Scroll to bottom when new messages are added
+     if (scrollAreaRef.current) {
+        const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+        if (viewport) {
+            viewport.scrollTop = viewport.scrollHeight;
+        }
+    }
+  }, [messages]);
+
+  const handleSendMessage = () => {
+    if (input.trim() === '') return;
+
+    const newMessage: Message = {
+      id: Date.now(),
+      author: 'You',
+      text: input,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      isCurrentUser: true,
+    };
+
+    setMessages([...messages, newMessage]);
+    setInput('');
+  };
+
   return (
     <Card className="h-[80vh] flex flex-col">
       <CardHeader>
         <CardTitle>🌾 Farmer's Community Hub</CardTitle>
         <CardDescription>
-          Connect with nearby farmers, share updates, and get advice.
+          Connect with nearby farmers, share updates, and get advice. (Messages stored locally)
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col gap-4 overflow-hidden">
-        <ScrollArea className="flex-grow pr-4">
+        <ScrollArea className="flex-grow pr-4" ref={scrollAreaRef}>
           <div className="space-y-6">
-            {mockCommunityMessages.map((message) => (
+            {messages.map((message) => (
               <div
                 key={message.id}
                 className={cn(
@@ -66,15 +128,14 @@ export default function CommunityPage() {
           <Input
             type="text"
             placeholder="Type your message..."
-            disabled
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <Button type="submit" disabled>
+          <Button type="submit" onClick={handleSendMessage}>
             <Send className="h-4 w-4" />
           </Button>
         </div>
-        <p className="text-xs text-center text-muted-foreground pt-2">
-            Community chat is currently in preview. Real-time messaging will be enabled soon.
-        </p>
       </CardContent>
     </Card>
   );
