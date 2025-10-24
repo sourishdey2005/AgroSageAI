@@ -1,6 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   AreaChart,
   Bot,
@@ -23,9 +25,15 @@ import {
 import { AgroSageLogo } from '../icons';
 
 export default function DashboardSidebar() {
-  // In a real app, you'd use usePathname and other logic to set isActive.
-  // For this component, we'll assume the main dashboard is always active.
-  const isActive = (path: string) => path === '/dashboard';
+  const pathname = usePathname();
+  const isActive = (path: string) => {
+    // For the main dashboard, check for exact match.
+    if (path === '/dashboard') {
+      return pathname === path;
+    }
+    // For other pages, check if the pathname starts with the path.
+    return pathname.startsWith(path);
+  }
 
   return (
     <>
@@ -42,7 +50,7 @@ export default function DashboardSidebar() {
             <SidebarMenuButton
               asChild
               tooltip={{ children: 'Dashboard' }}
-              isActive={isActive('/dashboard')}
+              isActive={isActive('/dashboard') && pathname === '/dashboard'}
             >
               <Link href="/dashboard">
                 <LayoutGrid />
@@ -51,40 +59,40 @@ export default function DashboardSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip={{ children: 'Crop Health' }}>
-              <Link href="/dashboard#crop-health">
+            <SidebarMenuButton asChild tooltip={{ children: 'Crop Health' }} isActive={isActive('/dashboard/crop-health')}>
+              <Link href="/dashboard/crop-health">
                 <Leaf />
                 <span>Crop Health</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip={{ children: 'Market Insights' }}>
-              <Link href="/dashboard#market-insights">
+            <SidebarMenuButton asChild tooltip={{ children: 'Market Insights' }} isActive={isActive('/dashboard/market-insights')}>
+              <Link href="/dashboard/market-insights">
                 <LineChart />
                 <span>Market Insights</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip={{ children: 'Receipts' }}>
-              <Link href="/dashboard#receipts">
+            <SidebarMenuButton asChild tooltip={{ children: 'Receipts' }} isActive={isActive('/dashboard/receipts')}>
+              <Link href="/dashboard/receipts">
                 <Receipt />
                 <span>Receipts</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip={{ children: 'Analytics' }}>
-              <Link href="/dashboard#analytics">
+            <SidebarMenuButton asChild tooltip={{ children: 'Analytics' }} isActive={isActive('/dashboard/analytics')}>
+              <Link href="/dashboard/analytics">
                 <AreaChart />
                 <span>Analytics</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip={{ children: 'AgroBot' }}>
-              <Link href="/dashboard#chatbot">
+            <SidebarMenuButton asChild tooltip={{ children: 'AgroBot' }} isActive={isActive('/dashboard/chatbot')}>
+              <Link href="/dashboard/chatbot">
                 <Bot />
                 <span>AgroBot</span>
               </Link>
