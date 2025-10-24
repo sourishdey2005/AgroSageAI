@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import {
+  AreaChart,
   Bot,
   LayoutGrid,
   Leaf,
@@ -24,7 +25,7 @@ import { AgroSageLogo } from '../icons';
 export default function DashboardSidebar() {
   // In a real app, you'd use usePathname and other logic to set isActive.
   // For this component, we'll assume the main dashboard is always active.
-  const isActive = true;
+  const isActive = (path: string) => path === '/dashboard';
 
   return (
     <>
@@ -41,7 +42,7 @@ export default function DashboardSidebar() {
             <SidebarMenuButton
               asChild
               tooltip={{ children: 'Dashboard' }}
-              isActive={isActive}
+              isActive={isActive('/dashboard')}
             >
               <Link href="/dashboard">
                 <LayoutGrid />
@@ -49,12 +50,52 @@ export default function DashboardSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={{ children: 'Crop Health' }}>
+              <Link href="/dashboard#crop-health">
+                <Leaf />
+                <span>Crop Health</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={{ children: 'Market Insights' }}>
+              <Link href="/dashboard#market-insights">
+                <LineChart />
+                <span>Market Insights</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={{ children: 'Receipts' }}>
+              <Link href="/dashboard#receipts">
+                <Receipt />
+                <span>Receipts</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={{ children: 'Analytics' }}>
+              <Link href="/dashboard#analytics">
+                <AreaChart />
+                <span>Analytics</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={{ children: 'AgroBot' }}>
+              <Link href="/dashboard#chatbot">
+                <Bot />
+                <span>AgroBot</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
 
       <SidebarFooter>
-         <SidebarSeparator />
-         <SidebarMenu>
+        <SidebarSeparator />
+        <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip={{ children: 'Settings' }}>
               <Link href="#">
