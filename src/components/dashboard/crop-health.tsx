@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -456,23 +457,16 @@ export default function CropHealthTab() {
                 <CardDescription>Last 5 uploaded images with YOLOv8 detection results and confidence levels.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                <ScrollArea className="w-full whitespace-nowrap">
-                    <div className="flex w-max space-x-4 pb-4">
+                <ScrollArea className="w-full">
+                    <div className="flex flex-col gap-4">
                     {diagnosisHistory.map((diag, index) => (
-                        <Card key={diag.id + index} className="w-[250px] shrink-0 overflow-hidden">
-                        <div className="relative h-32 w-full">
-                            <Image
-                                src={diag.imageUrl}
-                                alt={`Diagnosis for ${diag.disease}`}
-                                fill
-                                className="object-cover"
-                            />
-                            <Badge variant="destructive" className="absolute top-2 right-2">{diag.disease}</Badge>
-                        </div>
-                        <CardContent className="p-3">
-                            <div className="flex flex-col gap-2">
-                            <p className="text-sm font-semibold">{diag.disease}</p>
-                            <div className="flex items-center gap-2">
+                        <Card key={diag.id + index} className="overflow-hidden">
+                        <CardContent className="p-3 flex items-center justify-between gap-4">
+                            <div className="flex flex-col gap-1">
+                                <p className="text-sm font-semibold">{diag.disease}</p>
+                                <p className="text-xs text-muted-foreground">{new Date(diag.timestamp).toLocaleString()}</p>
+                            </div>
+                            <div className="flex items-center gap-2 w-24">
                                 <div className="w-full bg-muted rounded-full h-2.5">
                                     <div 
                                     className={cn("h-2.5 rounded-full", getConfidenceColor(diag.confidence))}
@@ -480,8 +474,6 @@ export default function CropHealthTab() {
                                     ></div>
                                 </div>
                                 <span className="text-xs font-mono text-muted-foreground">{ (diag.confidence * 100).toFixed(0) }%</span>
-                            </div>
-                            <p className="text-xs text-muted-foreground">{new Date(diag.timestamp).toLocaleString()}</p>
                             </div>
                         </CardContent>
                         </Card>
