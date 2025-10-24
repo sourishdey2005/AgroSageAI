@@ -73,10 +73,10 @@ const DiseaseFrequencyChart = () => {
         value: diseaseCounts[disease]
     }));
 
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF19A3'];
+    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF19A3', '#5E4DCD', '#D048B6', '#E87A5D', '#4ECDC4', '#F9D423', '#FF6B6B', '#9370DB', '#00A896', '#F4A261', '#E76F51', '#2A9D8F', '#E9C46A', '#F4A261', '#E76F51', '#264653', '#2A9D8F', '#E9C46A', '#F4A261', '#E76F51'];
 
     return (
-        <ChartContainer config={{}} className="mx-auto aspect-square h-[300px]">
+        <ChartContainer config={{}} className="mx-auto aspect-square h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
@@ -85,16 +85,15 @@ const DiseaseFrequencyChart = () => {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        outerRadius={80}
+                        outerRadius={100}
                         fill="#8884d8"
                         dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
                         {chartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                     </Pie>
-                    <Legend />
+                    <Legend wrapperStyle={{fontSize: "12px"}}/>
                 </PieChart>
             </ResponsiveContainer>
         </ChartContainer>
