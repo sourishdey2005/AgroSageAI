@@ -1,6 +1,8 @@
 import AiRecommendationHeatmap from '@/components/dashboard/ai-recommendation-heatmap';
 import FarmRoiVisualizer from '@/components/dashboard/farm-roi-visualizer';
 import GoalTrackerWidget from '@/components/dashboard/goal-tracker-widget';
+import InventoryTracker from '@/components/dashboard/inventory-tracker';
+import PeerBenchmarkingGraph from '@/components/dashboard/peer-benchmarking-graph';
 import ProfitProjectionMeter from '@/components/dashboard/profit-projection-meter';
 import SeasonalCropPlanner from '@/components/dashboard/seasonal-crop-planner';
 import YieldWeatherCorrelation from '@/components/dashboard/yield-weather-correlation';
@@ -73,6 +75,28 @@ export default function AnalyticsPage() {
         </CardHeader>
         <CardContent>
           <AiRecommendationHeatmap />
+        </CardContent>
+      </Card>
+       <Card>
+        <CardHeader>
+          <CardTitle>📦 Inventory Tracker</CardTitle>
+          <CardDescription>
+            Pie chart showing stock levels of fertilizers, pesticides, and seeds.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <InventoryTracker />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>🧍‍♂️ Peer Benchmarking Graph</CardTitle>
+          <CardDescription>
+            Compare your yield with the average yield of other farmers in your district.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PeerBenchmarkingGraph />
         </CardContent>
       </Card>
     </div>

@@ -2,6 +2,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -674,6 +675,21 @@ export const mockCommunityMessages = [
       isCurrentUser: false,
     }
 ];
+
+export const mockInventoryData = [
+    { name: 'Fertilizers', value: 400, unit: 'kg' },
+    { name: 'Pesticides', value: 150, unit: 'liters' },
+    { name: 'Seeds', value: 300, unit: 'kg' },
+    { name: 'Other', value: 100, unit: 'units' },
+];
+
+export const mockBenchmarkingData = [
+    { crop: 'Tomato', yourYield: 4500, districtAverage: 4200 },
+    { crop: 'Wheat', yourYield: 3200, districtAverage: 3500 },
+    { crop: 'Rice', yourYield: 6000, districtAverage: 5500 },
+    { crop: 'Potato', yourYield: 15000, districtAverage: 14000 },
+];
     
 
     
+
