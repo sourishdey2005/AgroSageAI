@@ -10,6 +10,7 @@ import {
   Leaf,
   LineChart,
   LogOut,
+  MessageSquare,
   Receipt,
   Settings,
 } from 'lucide-react';
@@ -87,6 +88,14 @@ export default function DashboardSidebar() {
               <Link href="/dashboard/analytics">
                 <AreaChart />
                 <span>Analytics</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={{ children: 'Community' }} isActive={isActive('/dashboard/community')}>
+              <Link href="/dashboard/community">
+                <MessageSquare />
+                <span>Community</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

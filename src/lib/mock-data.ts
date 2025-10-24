@@ -1,6 +1,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -622,6 +623,56 @@ export const mockRoiData = [
     { crop: 'Onion', roi: 210 },
     { crop: 'Potato', roi: 160 },
     { crop: 'Rice', roi: 220 },
+];
+
+export const mockRecommendationEffectiveness = {
+    Tomato: { 'Neem Oil': 0.9, 'Copper Fungicide': 0.8, 'Spinosad': 0.7, 'Bt': 0.6 },
+    Wheat: { 'Neem Oil': 0.7, 'Copper Fungicide': 0.85, 'Spinosad': 0.6, 'Bt': 0.5 },
+    Rice: { 'Neem Oil': 0.8, 'Copper Fungicide': 0.9, 'Spinosad': 0.5, 'Bt': 0.4 },
+    Potato: { 'Neem Oil': 0.6, 'Copper Fungicide': 0.7, 'Spinosad': 0.9, 'Bt': 0.8 },
+    Onion: { 'Neem Oil': 0.85, 'Copper Fungicide': 0.75, 'Spinosad': 0.6, 'Bt': 0.5 },
+};
+
+export const mockCommunityMessages = [
+    {
+      id: 1,
+      author: 'Ramesh Patel',
+      avatar: 'https://picsum.photos/seed/ramesh/40/40',
+      text: 'Has anyone seen success with the new fertilizer from AgriCo? Thinking of trying it for my next tomato crop.',
+      timestamp: '2 hours ago',
+      isCurrentUser: false,
+    },
+    {
+      id: 2,
+      author: 'Sunita Sharma',
+      avatar: 'https://picsum.photos/seed/sunita/40/40',
+      text: 'Warning to farmers in the Pune region: I spotted signs of Leaf Curl in my fields this morning. Be vigilant!',
+      timestamp: '1 hour ago',
+      isCurrentUser: false,
+    },
+    {
+      id: 3,
+      author: 'You',
+      text: "Thanks for the heads-up, Sunita! I'll check my crops right away. Did you use the AgroSage AI scanner for detection?",
+      timestamp: '55 minutes ago',
+      isCurrentUser: true,
+    },
+     {
+      id: 4,
+      author: 'Vikram Singh',
+      avatar: 'https://picsum.photos/seed/vikram/40/40',
+      text: 'Yes, Ramesh, the AgriCo fertilizer worked wonders for my wheat yield. Increased it by almost 15%!',
+      timestamp: '30 minutes ago',
+      isCurrentUser: false,
+    },
+    {
+      id: 5,
+      author: 'Sunita Sharma',
+      avatar: 'https://picsum.photos/seed/sunita/40/40',
+      text: 'I did use the scanner. The confidence level was 98% for Leaf Curl. The AI also recommended a Copper Fungicide treatment, which I just applied.',
+      timestamp: '15 minutes ago',
+      isCurrentUser: false,
+    }
 ];
     
 
