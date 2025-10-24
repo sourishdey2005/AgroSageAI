@@ -14,7 +14,7 @@ import { analyzeMarketPriceTrend, type MarketPriceTrendOutput } from '@/ai/flows
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Calendar as CalendarIcon, MapPin, TrendingUp, BarChart } from 'lucide-react';
 import { ChartContainer, ChartConfig, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { Area, AreaChart, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const formSchema = z.object({
   crop: z.string().min(1, 'Please select a crop.'),
@@ -187,26 +187,69 @@ export default function MarketInsightsTab() {
             )}
           </CardContent>
         </Card>
-         {result && (
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><BarChart className="h-5 w-5 text-primary"/>Predicted Price Trend (Next 7 Days)</CardTitle>
-                </CardHeader>
-                <CardContent>
-                     <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                        <LineChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                            <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} />
-                             <YAxis tickLine={false} axisLine={false} tickMargin={8} domain={['dataMin - 5', 'dataMax + 5']} />
-                            <Tooltip content={<ChartTooltipContent />} />
-                            <ChartLegend content={<ChartLegendContent />} />
-                            <Line dataKey="price" type="monotone" stroke="var(--color-price)" strokeWidth={2} dot={{ fill: "var(--color-price)" }} activeDot={{ r: 6 }} />
-                        </LineChart>
-                    </ChartContainer>
-                </CardContent>
-            </Card>
-        )}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart className="h-5 w-5 text-primary" />
+              Predicted Price Trend (Next 7 Days)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {result ? (
+              <ChartContainer config={chartConfig} className="h-[250px] w-full">
+                <AreaChart
+                  data={chartData}
+                  margin={{
+                    top: 10,
+                    right: 30,
+                    left: 0,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis
+                    dataKey="day"
+                    stroke=""
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                  />
+                  <YAxis
+                    stroke=""
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    domain={['dataMin - 5', 'dataMax + 5']}
+                  />
+                  <Tooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="dot" />}
+                  />
+                  <defs>
+                    <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <Area
+                    type="monotone"
+                    dataKey="price"
+                    stroke="hsl(var(--primary))"
+                    fillOpacity={1}
+                    fill="url(#colorPrice)"
+                  />
+                </AreaChart>
+              </ChartContainer>
+            ) : (
+                 <div className="flex items-center justify-center h-[250px] text-muted-foreground text-center p-4 border-2 border-dashed rounded-lg">
+                    The price trend graph will be displayed here once you generate a prediction.
+                </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 }
+
+    
