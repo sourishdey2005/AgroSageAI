@@ -5,6 +5,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -699,4 +700,21 @@ export const mockRiskData = [
     { metric: 'Market', value: 80 },
     { metric: 'Pest', value: 55 },
 ];
+
+export const mockEnergyData = [
+    { date: addDays(today, -6), energy: 120, water: 4500 },
+    { date: addDays(today, -5), energy: 110, water: 4200 },
+    { date: addDays(today, -4), energy: 130, water: 4800 },
+    { date: addDays(today, -3), energy: 125, water: 4600 },
+    { date: addDays(today, -2), energy: 140, water: 5000 },
+    { date: addDays(today, -1), energy: 135, water: 4900 },
+    { date: addDays(today, 0), energy: 150, water: 5200 },
+];
     
+export const mockDailyActions = [
+    { time: '06:00', task: 'Field Inspection', description: 'Check for pests and diseases in Zone A.' },
+    { time: '08:00', task: 'Irrigation', description: 'Start solar-powered irrigation for tomato crops.' },
+    { time: '11:00', task: 'Spraying', description: 'Apply Neem Oil as per the treatment schedule.' },
+    { time: '14:00', task: 'Monitor Market Prices', description: 'Check Pune Mandi for tomato price updates.' },
+    { time: '16:00', task: 'Harvesting', description: 'Harvest ripe onions from Zone B.' },
+];

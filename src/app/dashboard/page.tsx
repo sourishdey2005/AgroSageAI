@@ -4,12 +4,15 @@
 import CropHealthRadar from '@/components/dashboard/crop-health-radar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AreaChart, Bot, Leaf, LineChart, Receipt, Bell, AlertTriangle, TrendingUp as TrendingUpIcon, ArrowRight, BookText, Compass } from 'lucide-react';
+import { AreaChart, Bot, Leaf, LineChart, Receipt, Bell, AlertTriangle, TrendingUp as TrendingUpIcon, ArrowRight, BookText, Compass, Zap, ListChecks, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { generateWeeklyReport } from '@/ai/flows/weekly-report-flow';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import RiskCompass from '@/components/dashboard/risk-compass';
+import EnergyConsumptionDashboard from '@/components/dashboard/energy-consumption-dashboard';
+import DailyActionTimeline from '@/components/dashboard/daily-action-timeline';
+import KnowledgeHub from '@/components/dashboard/knowledge-hub';
 
 const alerts = [
     {
@@ -131,6 +134,35 @@ export default function DashboardPage() {
                 </CardContent>
             </Card>
         </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+         <Card className="lg:col-span-1">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><ListChecks /> Daily Action Timeline</CardTitle>
+                <CardDescription>Your AI-generated hourly plan for today.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <DailyActionTimeline />
+            </CardContent>
+        </Card>
+         <Card className="lg:col-span-2">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><GraduationCap /> Knowledge Hub</CardTitle>
+                <CardDescription>AI-curated farming best practices for your current crop.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <KnowledgeHub />
+            </CardContent>
+        </Card>
+         <Card className="lg:col-span-3">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Zap /> Energy Consumption Dashboard</CardTitle>
+                <CardDescription>Track the energy vs. water yield ratio for solar-powered irrigation.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <EnergyConsumptionDashboard />
+            </CardContent>
+        </Card>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card>
