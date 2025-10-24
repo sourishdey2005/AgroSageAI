@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock, PieChart as PieChartIcon } from 'lucide-react';
+import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock, PieChart as PieChartIcon, Map } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { getCropDiseaseTreatmentSuggestion } from '@/ai/flows/crop-disease-treatment-suggestion';
 import { useToast } from '@/hooks/use-toast';
@@ -15,9 +15,10 @@ import { mockDiagnoses, type MockDiagnosis, mockTreatments, type MockTreatment }
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { differenceInDays, format, formatDistanceToNowStrict } from 'date-fns';
+import { format, formatDistanceToNowStrict } from 'date-fns';
 import { Pie, PieChart, Cell, ResponsiveContainer, Legend } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 type AnalysisResult = {
   diseaseName: string;
@@ -100,6 +101,71 @@ const DiseaseFrequencyChart = () => {
     );
 };
 
+const DiseaseHotspotMap = () => {
+    const zoneDiagnoses = mockDiagnoses.reduce((acc, diagnosis) => {
+      const zone = diagnosis.zone || 'Unknown';
+      if (!acc[zone]) {
+        acc[zone] = [];
+      }
+      acc[zone].push(diagnosis);
+      return acc;
+    }, {} as Record<string, MockDiagnosis[]>);
+  
+    const zones = Array.from({ length: 16 }, (_, i) => `Zone ${String.fromCharCode(65 + Math.floor(i/4))}${i%4 + 1}`);
+  
+    const getZoneColor = (count: number) => {
+        if (count === 0) return 'bg-green-500/20 hover:bg-green-500/40';
+        if (count <= 2) return 'bg-yellow-500/30 hover:bg-yellow-500/50';
+        if (count <= 4) return 'bg-orange-500/40 hover:bg-orange-500/60';
+        return 'bg-red-500/50 hover:bg-red-500/70';
+    };
+
+    const getZoneBorderColor = (count: number) => {
+        if (count === 0) return 'border-green-500/30';
+        if (count <= 2) return 'border-yellow-500/40';
+        if (count <= 4) return 'border-orange-500/50';
+        return 'border-red-500/60';
+    }
+  
+    return (
+        <TooltipProvider>
+            <div className="grid grid-cols-4 grid-rows-4 gap-2 aspect-square max-w-[300px] mx-auto">
+                {zones.map((zone) => {
+                const diagnosesInZone = zoneDiagnoses[zone] || [];
+                const count = diagnosesInZone.length;
+                const topDisease = diagnosesInZone.length > 0 ? 
+                    Object.entries(diagnosesInZone.reduce((acc, d) => {
+                        acc[d.disease] = (acc[d.disease] || 0) + 1;
+                        return acc;
+                    }, {} as Record<string, number>)).sort((a, b) => b[1] - a[1])[0][0] 
+                    : 'None';
+        
+                return (
+                    <Tooltip key={zone}>
+                    <TooltipTrigger asChild>
+                        <div
+                        className={cn(
+                            'border-2 rounded-md flex items-center justify-center text-xs font-semibold text-white transition-colors cursor-pointer',
+                            getZoneColor(count),
+                            getZoneBorderColor(count)
+                        )}
+                        >
+                        {zone}
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p className="font-bold">{zone}</p>
+                        <p>Diagnoses: {count}</p>
+                        {count > 0 && <p>Top Issue: {topDisease}</p>}
+                    </TooltipContent>
+                    </Tooltip>
+                );
+                })}
+            </div>
+      </TooltipProvider>
+    );
+};
+
 export default function CropHealthTab() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -173,6 +239,7 @@ export default function CropHealthTab() {
         disease: mockDiseaseName,
         confidence: mockConfidence,
         timestamp: new Date().toISOString(),
+        zone: `Zone ${String.fromCharCode(65 + Math.floor(Math.random() * 4))}${Math.floor(Math.random() * 4) + 1}`
       };
       setDiagnosisHistory(prev => [newDiagnosis, ...prev.slice(0, 4)]);
 
@@ -273,7 +340,7 @@ export default function CropHealthTab() {
         </Card>
       </div>
       
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-1 gap-6">
             <Card>
                 <CardHeader>
                 <CardTitle className="flex items-center gap-2"><History /> 📸 AI Crop Diagnosis Panel</CardTitle>
@@ -315,7 +382,9 @@ export default function CropHealthTab() {
                 </ScrollArea>
                 </CardContent>
             </Card>
-            <Card>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-6">
+             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><PieChartIcon /> Disease Frequency Analysis</CardTitle>
                     <CardDescription>Distribution of detected diseases over the last 30 days.</CardDescription>
@@ -324,9 +393,16 @@ export default function CropHealthTab() {
                     <DiseaseFrequencyChart />
                 </CardContent>
             </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Map /> Disease Hotspot Map</CardTitle>
+                    <CardDescription>Farm zones with the highest frequency of disease detection.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <DiseaseHotspotMap />
+                </CardContent>
+            </Card>
         </div>
     </div>
   );
 }
-
-    

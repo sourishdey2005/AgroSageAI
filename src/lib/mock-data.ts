@@ -1,12 +1,14 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
   disease: string;
   confidence: number;
   timestamp: string;
+  zone?: string;
 };
 
 export type MockTreatment = {
@@ -29,6 +31,8 @@ export type MockTransaction = {
     actualProfit: number;
 };
   
+const generateZone = () => `Zone ${String.fromCharCode(65 + Math.floor(Math.random() * 4))}${Math.floor(Math.random() * 4) + 1}`;
+
 // Generate 50+ mock data points
 export const mockDiagnoses: MockDiagnosis[] = [
   {
@@ -37,6 +41,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Bacterial Blight',
     confidence: 0.95,
     timestamp: '2024-07-28T10:30:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_002',
@@ -44,6 +49,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Powdery Mildew',
     confidence: 0.88,
     timestamp: '2024-07-28T10:25:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_003',
@@ -51,6 +57,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Leaf Curl',
     confidence: 0.99,
     timestamp: '2024-07-28T10:20:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_004',
@@ -58,6 +65,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Rust',
     confidence: 0.76,
     timestamp: '2024-07-28T10:15:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_005',
@@ -65,6 +73,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Downy Mildew',
     confidence: 0.91,
     timestamp: '2024-07-28T10:10:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_006',
@@ -72,6 +81,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Black Spot',
     confidence: 0.82,
     timestamp: '2024-07-27T18:45:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_007',
@@ -79,6 +89,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Anthracnose',
     confidence: 0.93,
     timestamp: '2024-07-27T18:30:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_008',
@@ -86,6 +97,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Septoria Leaf Spot',
     confidence: 0.85,
     timestamp: '2024-07-27T17:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_009',
@@ -93,6 +105,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Verticillium Wilt',
     confidence: 0.96,
     timestamp: '2024-07-27T16:50:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_010',
@@ -100,6 +113,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Early Blight',
     confidence: 0.89,
     timestamp: '2024-07-27T15:20:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_011',
@@ -107,6 +121,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Fusarium Wilt',
     confidence: 0.98,
     timestamp: '2024-07-26T14:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_012',
@@ -114,6 +129,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Gray Mold',
     confidence: 0.81,
     timestamp: '2024-07-26T13:45:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_013',
@@ -121,6 +137,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Canker',
     confidence: 0.79,
     timestamp: '2024-07-26T11:10:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_014',
@@ -128,6 +145,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Mosaic Virus',
     confidence: 0.94,
     timestamp: '2024-07-26T11:05:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_015',
@@ -135,6 +153,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Sooty Mold',
     confidence: 0.72,
     timestamp: '2024-07-26T09:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_016',
@@ -142,6 +161,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Bacterial Wilt',
     confidence: 0.97,
     timestamp: '2024-07-25T16:30:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_017',
@@ -149,6 +169,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Clubroot',
     confidence: 0.90,
     timestamp: '2024-07-25T15:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_018',
@@ -156,6 +177,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Fire Blight',
     confidence: 0.92,
     timestamp: '2024-07-25T14:10:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_019',
@@ -163,6 +185,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Scab',
     confidence: 0.83,
     timestamp: '2024-07-25T12:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_020',
@@ -170,6 +193,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Root Rot',
     confidence: 0.88,
     timestamp: '2024-07-25T11:50:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_021',
@@ -177,6 +201,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Gall',
     confidence: 0.75,
     timestamp: '2024-07-24T18:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_022',
@@ -184,6 +209,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Leaf Spot',
     confidence: 0.86,
     timestamp: '2024-07-24T17:30:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_023',
@@ -191,6 +217,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'White Mold',
     confidence: 0.91,
     timestamp: '2024-07-24T16:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_024',
@@ -198,6 +225,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Yellows',
     confidence: 0.80,
     timestamp: '2024-07-24T15:45:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_025',
@@ -205,6 +233,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Stem Rot',
     confidence: 0.87,
     timestamp: '2024-07-24T14:20:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_026',
@@ -212,6 +241,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Dieback',
     confidence: 0.78,
     timestamp: '2024-07-23T12:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_027',
@@ -219,6 +249,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Botrytis Blight',
     confidence: 0.89,
     timestamp: '2024-07-23T11:30:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_028',
@@ -226,6 +257,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Shot Hole',
     confidence: 0.74,
     timestamp: '2024-07-23T10:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_029',
@@ -233,6 +265,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Tip Blight',
     confidence: 0.84,
     timestamp: '2024-07-23T09:15:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_030',
@@ -240,6 +273,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Needle Cast',
     confidence: 0.88,
     timestamp: '2024-07-23T09:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_031',
@@ -247,6 +281,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Crown Gall',
     confidence: 0.95,
     timestamp: '2024-07-22T17:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_032',
@@ -254,6 +289,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Damping Off',
     confidence: 0.93,
     timestamp: '2024-07-22T16:30:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_033',
@@ -261,6 +297,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Ergot',
     confidence: 0.82,
     timestamp: '2024-07-22T15:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_034',
@@ -268,6 +305,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Phytophthora Rot',
     confidence: 0.96,
     timestamp: '2024-07-22T14:45:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_035',
@@ -275,6 +313,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Pythium Rot',
     confidence: 0.94,
     timestamp: '2024-07-22T13:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_036',
@@ -282,6 +321,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Rhizoctonia',
     confidence: 0.89,
     timestamp: '2024-07-21T11:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_037',
@@ -289,6 +329,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Sclerotinia',
     confidence: 0.91,
     timestamp: '2024-07-21T10:30:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_038',
@@ -296,6 +337,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Southern Blight',
     confidence: 0.92,
     timestamp: '2024-07-21T10:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_039',
@@ -303,6 +345,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Take-all Patch',
     confidence: 0.85,
     timestamp: '2024-07-21T09:45:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_040',
@@ -310,6 +353,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Thielaviopsis',
     confidence: 0.87,
     timestamp: '2024-07-21T09:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_041',
@@ -317,6 +361,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Aster Yellows',
     confidence: 0.78,
     timestamp: '2024-07-20T18:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_042',
@@ -324,6 +369,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Black Knot',
     confidence: 0.88,
     timestamp: '2024-07-20T17:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_043',
@@ -331,6 +377,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Brown Rot',
     confidence: 0.91,
     timestamp: '2024-07-20T16:30:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_044',
@@ -338,6 +385,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Cedar-Apple Rust',
     confidence: 0.84,
     timestamp: '2024-07-20T15:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_045',
@@ -345,6 +393,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Dutch Elm Disease',
     confidence: 0.99,
     timestamp: '2024-07-20T14:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_046',
@@ -352,6 +401,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Hypoxylon Canker',
     confidence: 0.86,
     timestamp: '2024-07-19T12:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_047',
@@ -359,6 +409,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Lethal Yellowing',
     confidence: 0.98,
     timestamp: '2024-07-19T11:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_048',
@@ -366,6 +417,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Oak Wilt',
     confidence: 0.97,
     timestamp: '2024-07-19T10:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_049',
@@ -373,6 +425,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Peach Leaf Curl',
     confidence: 0.92,
     timestamp: '2024-07-19T09:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_050',
@@ -380,6 +433,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Smut',
     confidence: 0.79,
     timestamp: '2024-07-18T16:00:00Z',
+    zone: generateZone(),
   },
   {
     id: 'diag_051',
@@ -387,6 +441,7 @@ export const mockDiagnoses: MockDiagnosis[] = [
     disease: 'Sudden Oak Death',
     confidence: 0.99,
     timestamp: '2024-07-18T15:00:00Z',
+    zone: generateZone(),
   },
 ];
 
