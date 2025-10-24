@@ -1,5 +1,6 @@
 import DashboardHeader from '@/components/layout/dashboard-header';
 import DashboardSidebar from '@/components/layout/dashboard-sidebar';
+import { PrototypeLoginInfo } from '@/components/prototype-login-info';
 import {
   SidebarProvider,
   Sidebar,
@@ -20,6 +21,7 @@ export default function DashboardLayout({
         <DashboardHeader />
         <main className="p-4 lg:p-6">{children}</main>
       </SidebarInset>
+      <PrototypeLoginInfo />
     </SidebarProvider>
   );
 }
