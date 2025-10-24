@@ -8,6 +8,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -754,3 +755,17 @@ export const mockCropRankingData = [
     { rank: 4, crop: 'Wheat', profit: 160000, yield: 8000, demand: 'Medium' },
     { rank: 5, crop: 'Potato', profit: 150000, yield: 10000, demand: 'Low' },
 ];
+
+export const mockInstantPrices = {
+    'Tomato': { price: 55, mandi: 'Pune' },
+    'Onion': { price: 32, mandi: 'Nagpur' },
+    'Potato': { price: 20, mandi: 'Lucknow' },
+    'Wheat': { price: 25, mandi: 'Mumbai' },
+    'Rice': { price: 40, mandi: 'Delhi' },
+    'Sugarcane': { price: 4, mandi: 'Pune' },
+    'Cotton': { price: 65, mandi: 'Nagpur' },
+    'Coffee': { price: 250, mandi: 'Lucknow' },
+    'Barley': { price: 22, mandi: 'Mumbai' },
+    'Watermelon': { price: 15, mandi: 'Delhi' },
+    'Millet': { price: 30, mandi: 'Pune' },
+};

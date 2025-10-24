@@ -1,10 +1,11 @@
 
+
 'use client';
 
 import CropHealthRadar from '@/components/dashboard/crop-health-radar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AreaChart, Bot, Leaf, LineChart, Receipt, Bell, AlertTriangle, TrendingUp as TrendingUpIcon, ArrowRight, BookText, Compass, Zap, ListChecks, GraduationCap } from 'lucide-react';
+import { AreaChart, Bot, Leaf, LineChart, Receipt, Bell, AlertTriangle, TrendingUp as TrendingUpIcon, ArrowRight, BookText, Compass, Zap, ListChecks, GraduationCap, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { generateWeeklyReport } from '@/ai/flows/weekly-report-flow';
 import { useEffect, useState } from 'react';
@@ -13,6 +14,7 @@ import RiskCompass from '@/components/dashboard/risk-compass';
 import EnergyConsumptionDashboard from '@/components/dashboard/energy-consumption-dashboard';
 import DailyActionTimeline from '@/components/dashboard/daily-action-timeline';
 import KnowledgeHub from '@/components/dashboard/knowledge-hub';
+import RegionalInsightsCarousel from '@/components/dashboard/regional-insights-carousel';
 
 const alerts = [
     {
@@ -79,6 +81,15 @@ export default function DashboardPage() {
           Here is an overview of your farm's current status and tools.
         </p>
       </div>
+       <Card>
+        <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Globe /> Regional Insights</CardTitle>
+            <CardDescription>A carousel of key agricultural data from various regions.</CardDescription>
+        </CardHeader>
+        <CardContent>
+            <RegionalInsightsCarousel />
+        </CardContent>
+      </Card>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
            <Card>
