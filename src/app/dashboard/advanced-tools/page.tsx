@@ -13,6 +13,7 @@ import { Award, BrainCircuit, Heart, ShieldCheck, TrendingUp, Ship, FlaskConical
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, LineChart, Line, Tooltip as RechartsTooltip } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Label } from '@/components/ui/label';
 
 const BadgeIcon = ({ iconName, className }: { iconName: string; className?: string }) => {
     switch (iconName) {
