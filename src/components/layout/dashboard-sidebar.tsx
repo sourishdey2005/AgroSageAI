@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   AreaChart,
   Bot,
+  FlaskConical,
   LayoutGrid,
   Leaf,
   LineChart,
@@ -88,6 +89,14 @@ export default function DashboardSidebar() {
               <Link href="/dashboard/analytics">
                 <AreaChart />
                 <span>Analytics</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+           <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={{ children: 'Advanced Tools' }} isActive={isActive('/dashboard/advanced-tools')}>
+              <Link href="/dashboard/advanced-tools">
+                <FlaskConical />
+                <span>Advanced Tools</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

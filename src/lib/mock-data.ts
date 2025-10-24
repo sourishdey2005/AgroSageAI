@@ -6,6 +6,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -717,4 +718,22 @@ export const mockDailyActions = [
     { time: '11:00', task: 'Spraying', description: 'Apply Neem Oil as per the treatment schedule.' },
     { time: '14:00', task: 'Monitor Market Prices', description: 'Check Pune Mandi for tomato price updates.' },
     { time: '16:00', task: 'Harvesting', description: 'Harvest ripe onions from Zone B.' },
+];
+
+export const mockAchievementBadges = [
+    { id: 'badge1', title: 'Disease-Free Week', icon: 'ShieldCheck', description: 'Kept your crops healthy for a full week.', unlocked: true },
+    { id: 'badge2', title: 'Market Master', icon: 'TrendingUp', description: 'Sold a crop at the 30-day price high.', unlocked: true },
+    { id: 'badge3', title: 'Perfect Harvest', icon: 'Award', description: 'Achieved 100% of your yield goal.', unlocked: false },
+    { id: 'badge4', title: 'Community Helper', icon: 'Heart', description: 'Shared valuable advice in the community hub.', unlocked: true },
+    { id: 'badge5', title: 'AI Adopter', icon: 'BrainCircuit', description: 'Used 5 different AI tools in one day.', unlocked: false },
+];
+
+export const mockPriceConfidence = [
+    { day: 'Day 1', confidence: 95 },
+    { day: 'Day 2', confidence: 92 },
+    { day: 'Day 3', confidence: 88 },
+    { day: 'Day 4', confidence: 85 },
+    { day: 'Day 5', confidence: 78 },
+    { day: 'Day 6', confidence: 72 },
+    { day: 'Day 7', confidence: 65 },
 ];
