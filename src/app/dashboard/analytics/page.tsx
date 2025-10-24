@@ -1,13 +1,47 @@
 import AiRecommendationHeatmap from '@/components/dashboard/ai-recommendation-heatmap';
-import AnalyticsTab from '@/components/dashboard/analytics';
 import FarmRoiVisualizer from '@/components/dashboard/farm-roi-visualizer';
 import GoalTrackerWidget from '@/components/dashboard/goal-tracker-widget';
+import ProfitProjectionMeter from '@/components/dashboard/profit-projection-meter';
+import SeasonalCropPlanner from '@/components/dashboard/seasonal-crop-planner';
+import YieldWeatherCorrelation from '@/components/dashboard/yield-weather-correlation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function AnalyticsPage() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <AnalyticsTab />
+       <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>📅 Seasonal Crop Planner</CardTitle>
+          <CardDescription>
+            Get AI suggestions for the next best crop based on soil type, rainfall, and market trends.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SeasonalCropPlanner />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>🪙 Profit Projection Meter</CardTitle>
+          <CardDescription>
+            Gauge showing projected vs. achieved earnings for the current month.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ProfitProjectionMeter />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>🌦️ Weather-Yield Correlation</CardTitle>
+          <CardDescription>
+            Chart correlating weather patterns with historical crop yield.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <YieldWeatherCorrelation />
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>🎯 Goal Tracker</CardTitle>
