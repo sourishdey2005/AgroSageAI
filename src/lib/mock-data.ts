@@ -562,5 +562,3 @@ export const mockDailyPerformance = [
     { date: addDays(today, -1), healthy: 96.5 },
     { date: addDays(today, 0), healthy: 97.0 },
 ];
-
-    
