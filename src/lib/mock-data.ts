@@ -7,6 +7,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -736,4 +737,20 @@ export const mockPriceConfidence = [
     { day: 'Day 5', confidence: 78 },
     { day: 'Day 6', confidence: 72 },
     { day: 'Day 7', confidence: 65 },
+];
+
+export const mockExpenseData = [
+    { name: 'Pesticides', value: 15000, color: 'hsl(var(--chart-1))' },
+    { name: 'Water', value: 8000, color: 'hsl(var(--chart-2))' },
+    { name: 'Transport', value: 12000, color: 'hsl(var(--chart-3))' },
+    { name: 'Labor', value: 25000, color: 'hsl(var(--chart-4))' },
+    { name: 'Seeds', value: 10000, color: 'hsl(var(--chart-5))' },
+];
+
+export const mockCropRankingData = [
+    { rank: 1, crop: 'Tomato', profit: 250000, yield: 5000, demand: 'High' },
+    { rank: 2, crop: 'Onion', profit: 180000, yield: 6000, demand: 'High' },
+    { rank: 3, crop: 'Rice', profit: 220000, yield: 7500, demand: 'Medium' },
+    { rank: 4, crop: 'Wheat', profit: 160000, yield: 8000, demand: 'Medium' },
+    { rank: 5, crop: 'Potato', profit: 150000, yield: 10000, demand: 'Low' },
 ];

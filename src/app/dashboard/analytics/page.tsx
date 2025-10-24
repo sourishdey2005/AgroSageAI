@@ -7,11 +7,15 @@ import ProfitProjectionMeter from '@/components/dashboard/profit-projection-mete
 import SeasonalCropPlanner from '@/components/dashboard/seasonal-crop-planner';
 import YieldWeatherCorrelation from '@/components/dashboard/yield-weather-correlation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import ExpenseAnalyzer from '@/components/dashboard/expense-analyzer';
+import AiScheduleGenerator from '@/components/dashboard/ai-schedule-generator';
+import DataDrivenCropRanking from '@/components/dashboard/data-driven-crop-ranking';
+import { IndianRupee, CalendarCog, Trophy } from 'lucide-react';
 
 export default function AnalyticsPage() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-       <Card className="lg:col-span-2">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+       <Card className="lg:col-span-3">
         <CardHeader>
           <CardTitle>📅 Seasonal Crop Planner</CardTitle>
           <CardDescription>
@@ -66,6 +70,28 @@ export default function AnalyticsPage() {
           <FarmRoiVisualizer />
         </CardContent>
       </Card>
+       <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><IndianRupee /> Expense Analyzer</CardTitle>
+          <CardDescription>
+            A pie chart breaking down your farm's operational costs.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ExpenseAnalyzer />
+        </CardContent>
+      </Card>
+       <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><CalendarCog /> AI Schedule Generator</CardTitle>
+          <CardDescription>
+            Generate an automated maintenance plan based on crop growth stage.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AiScheduleGenerator />
+        </CardContent>
+      </Card>
       <Card className="lg:col-span-2">
         <CardHeader>
           <CardTitle>🧠 AI Recommendation Heatmap</CardTitle>
@@ -97,6 +123,17 @@ export default function AnalyticsPage() {
         </CardHeader>
         <CardContent>
           <PeerBenchmarkingGraph />
+        </CardContent>
+      </Card>
+       <Card className="lg:col-span-3">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Trophy /> Data-Driven Crop Ranking</CardTitle>
+          <CardDescription>
+            Crops ranked by profitability, yield, and market demand.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataDrivenCropRanking />
         </CardContent>
       </Card>
     </div>
