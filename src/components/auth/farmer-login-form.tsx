@@ -5,7 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,10 +25,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LoginSchema } from "@/lib/schemas";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Apple, Chrome } from "lucide-react";
 
-export function LoginForm() {
+export function FarmerLoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -51,7 +52,7 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl font-headline">Login</CardTitle>
+        <CardTitle className="text-2xl font-headline">Farmer Login</CardTitle>
         <CardDescription>
           Enter your email below to login to your account.
         </CardDescription>
@@ -91,6 +92,17 @@ export function LoginForm() {
             </Button>
           </form>
         </Form>
+        <Separator className="my-4" />
+        <div className="space-y-4">
+          <Button variant="outline" className="w-full">
+            <Chrome className="mr-2 h-4 w-4" />
+            Sign in with Google
+          </Button>
+          <Button variant="outline" className="w-full">
+            <Apple className="mr-2 h-4 w-4" />
+            Sign in with Apple
+          </Button>
+        </div>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
           <Link href="/signup" className="underline text-primary">
