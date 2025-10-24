@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock } from 'lucide-react';
+import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock, PieChart as PieChartIcon } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { getCropDiseaseTreatmentSuggestion } from '@/ai/flows/crop-disease-treatment-suggestion';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +16,8 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { differenceInDays, format, formatDistanceToNowStrict } from 'date-fns';
+import { Pie, PieChart, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 
 type AnalysisResult = {
   diseaseName: string;
@@ -34,7 +36,6 @@ const TreatmentTimelineItem = ({ treatment, isLast }: { treatment: MockTreatment
     const nextDoseDate = new Date(treatment.nextDose);
     const now = new Date();
     const isOverdue = nextDoseDate < now;
-    const daysUntilNext = differenceInDays(nextDoseDate, now);
   
     return (
       <div className="flex gap-4">
@@ -59,6 +60,45 @@ const TreatmentTimelineItem = ({ treatment, isLast }: { treatment: MockTreatment
       </div>
     );
   };
+
+const DiseaseFrequencyChart = () => {
+    const diseaseCounts = mockDiagnoses.reduce((acc, diagnosis) => {
+        acc[diagnosis.disease] = (acc[diagnosis.disease] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
+
+    const chartData = Object.keys(diseaseCounts).map(disease => ({
+        name: disease,
+        value: diseaseCounts[disease]
+    }));
+
+    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF19A3'];
+
+    return (
+        <ChartContainer config={{}} className="mx-auto aspect-square h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                    <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                    <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                        {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
+                    <Legend />
+                </PieChart>
+            </ResponsiveContainer>
+        </ChartContainer>
+    );
+};
 
 export default function CropHealthTab() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -233,47 +273,60 @@ export default function CropHealthTab() {
         </Card>
       </div>
       
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><History /> 📸 AI Crop Diagnosis Panel</CardTitle>
-          <CardDescription>Last 5 uploaded images with YOLOv8 detection results and confidence levels.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="w-full whitespace-nowrap">
-            <div className="flex w-max space-x-4 pb-4">
-              {diagnosisHistory.map((diag, index) => (
-                <Card key={diag.id + index} className="w-[250px] shrink-0 overflow-hidden">
-                  <div className="relative h-32 w-full">
-                     <Image
-                        src={diag.imageUrl}
-                        alt={`Diagnosis for ${diag.disease}`}
-                        fill
-                        className="object-cover"
-                      />
-                      <Badge variant="destructive" className="absolute top-2 right-2">{diag.disease}</Badge>
-                  </div>
-                  <CardContent className="p-3">
-                     <div className="flex flex-col gap-2">
-                       <p className="text-sm font-semibold">{diag.disease}</p>
-                       <div className="flex items-center gap-2">
-                         <div className="w-full bg-muted rounded-full h-2.5">
-                            <div 
-                              className={cn("h-2.5 rounded-full", getConfidenceColor(diag.confidence))}
-                              style={{ width: `${diag.confidence * 100}%` }}
-                            ></div>
-                         </div>
-                         <span className="text-xs font-mono text-muted-foreground">{ (diag.confidence * 100).toFixed(0) }%</span>
-                       </div>
-                       <p className="text-xs text-muted-foreground">{new Date(diag.timestamp).toLocaleString()}</p>
-                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </CardContent>
-      </Card>
+        <div className="grid lg:grid-cols-2 gap-6">
+            <Card>
+                <CardHeader>
+                <CardTitle className="flex items-center gap-2"><History /> 📸 AI Crop Diagnosis Panel</CardTitle>
+                <CardDescription>Last 5 uploaded images with YOLOv8 detection results and confidence levels.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                <ScrollArea className="w-full whitespace-nowrap">
+                    <div className="flex w-max space-x-4 pb-4">
+                    {diagnosisHistory.map((diag, index) => (
+                        <Card key={diag.id + index} className="w-[250px] shrink-0 overflow-hidden">
+                        <div className="relative h-32 w-full">
+                            <Image
+                                src={diag.imageUrl}
+                                alt={`Diagnosis for ${diag.disease}`}
+                                fill
+                                className="object-cover"
+                            />
+                            <Badge variant="destructive" className="absolute top-2 right-2">{diag.disease}</Badge>
+                        </div>
+                        <CardContent className="p-3">
+                            <div className="flex flex-col gap-2">
+                            <p className="text-sm font-semibold">{diag.disease}</p>
+                            <div className="flex items-center gap-2">
+                                <div className="w-full bg-muted rounded-full h-2.5">
+                                    <div 
+                                    className={cn("h-2.5 rounded-full", getConfidenceColor(diag.confidence))}
+                                    style={{ width: `${diag.confidence * 100}%` }}
+                                    ></div>
+                                </div>
+                                <span className="text-xs font-mono text-muted-foreground">{ (diag.confidence * 100).toFixed(0) }%</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">{new Date(diag.timestamp).toLocaleString()}</p>
+                            </div>
+                        </CardContent>
+                        </Card>
+                    ))}
+                    </div>
+                    <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><PieChartIcon /> Disease Frequency Analysis</CardTitle>
+                    <CardDescription>Distribution of detected diseases over the last 30 days.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <DiseaseFrequencyChart />
+                </CardContent>
+            </Card>
+        </div>
     </div>
   );
 }
+
+    
