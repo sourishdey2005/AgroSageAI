@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "A vibrant green farm field under a sunny sky",
+      "imageUrl": "https://images.unsplash.com/photo-1612298389479-585588cab492?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxmYXJtJTIwZmllbGR8ZW58MHx8fHwxNzYxMjAwMjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "farm field"
+    },
+    {
+      "id": "crop-placeholder",
+      "description": "A placeholder for a crop image",
+      "imageUrl": "https://images.unsplash.com/photo-1593309556524-350239b6ac10?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwbGFudCUyMGxlYWZ8ZW58MHx8fHwxNzYxMjQ4MDI2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "plant leaf"
+    }
+  ]
 }
