@@ -1,4 +1,5 @@
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -562,3 +563,15 @@ export const mockDailyPerformance = [
     { date: addDays(today, -1), healthy: 96.5 },
     { date: addDays(today, 0), healthy: 97.0 },
 ];
+
+export const mockIrrigationData = [
+    { day: addDays(today, -6), planned: 5000, actual: 5200 },
+    { day: addDays(today, -5), planned: 5000, actual: 4800 },
+    { day: addDays(today, -4), planned: 5500, actual: 5600 },
+    { day: addDays(today, -3), planned: 5500, actual: 5400 },
+    { day: addDays(today, -2), planned: 6000, actual: 6100 },
+    { day: addDays(today, -1), planned: 6000, actual: 5900 },
+    { day: addDays(today, 0), planned: 6200, actual: 6200 },
+];
+
+    

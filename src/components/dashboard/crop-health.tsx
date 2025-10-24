@@ -7,11 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock, PieChart as PieChartIcon, Map, LineChart, Sliders } from 'lucide-react';
+import { Loader2, Upload, AlertCircle, Sparkles, History, Camera, SprayCan, Clock, PieChart as PieChartIcon, Map, LineChart, Sliders, Droplets } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { getCropDiseaseTreatmentSuggestion } from '@/ai/flows/crop-disease-treatment-suggestion';
 import { useToast } from '@/hooks/use-toast';
-import { mockDiagnoses, type MockDiagnosis, mockTreatments, type MockTreatment, mockDailyPerformance } from '@/lib/mock-data';
+import { mockDiagnoses, type MockDiagnosis, mockTreatments, type MockTreatment, mockDailyPerformance, mockIrrigationData } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
@@ -240,6 +240,41 @@ const AutoFertilizerEstimator = () => {
     );
 };
 
+const SmartIrrigationTracker = () => {
+    const chartConfig = {
+      planned: { label: 'Planned', color: 'hsl(var(--chart-1))' },
+      actual: { label: 'Actual', color: 'hsl(var(--chart-2))' },
+    };
+  
+    return (
+      <ChartContainer config={chartConfig} className="h-[250px] w-full">
+        <ComposedChart data={mockIrrigationData}>
+          <CartesianGrid vertical={false} />
+          <XAxis dataKey="day" tickFormatter={(val) => format(new Date(val), 'EEE')} stroke="" />
+          <YAxis
+            label={{
+              value: 'Usage (liters)',
+              angle: -90,
+              position: 'insideLeft',
+              offset: -10,
+            }}
+            stroke=""
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <Legend />
+          <Bar dataKey="planned" fill="var(--color-planned)" radius={4} />
+          <Line
+            type="monotone"
+            dataKey="actual"
+            stroke="var(--color-actual)"
+            strokeWidth={2}
+          />
+        </ComposedChart>
+      </ChartContainer>
+    );
+  };
+  
+
 export default function CropHealthTab() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -457,7 +492,7 @@ export default function CropHealthTab() {
                 </CardContent>
             </Card>
         </div>
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2"><LineChart /> Daily Farm Performance</CardTitle>
@@ -474,6 +509,15 @@ export default function CropHealthTab() {
                 </CardHeader>
                 <CardContent>
                     <AutoFertilizerEstimator />
+                </CardContent>
+            </Card>
+             <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Droplets /> Smart Irrigation Tracker</CardTitle>
+                    <CardDescription>Dynamic chart comparing planned vs. actual water usage.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <SmartIrrigationTracker />
                 </CardContent>
             </Card>
         </div>
@@ -500,3 +544,5 @@ export default function CropHealthTab() {
     </div>
   );
 }
+
+    
