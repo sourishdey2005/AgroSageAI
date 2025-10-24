@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Download, FileText, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
+import { Download, FileText, Loader2, TrendingUp, TrendingDown, IndianRupee } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateYieldAndProfitReceipt } from '@/ai/flows/yield-and-profit-receipt';
 import {
@@ -31,12 +31,12 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { mockTransactions, type MockTransaction } from '@/lib/mock-data';
 
 const chartConfig = {
-  forecastedProfit: {
-    label: 'Forecasted Profit',
+  forecastedPrice: {
+    label: 'Forecasted Price',
     color: 'hsl(var(--chart-2))',
   },
-  actualProfit: {
-    label: 'Actual Profit',
+  actualPrice: {
+    label: 'Actual Price',
     color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;
@@ -82,9 +82,9 @@ export default function ReceiptsTab() {
 
   const chartData = [
     {
-      label: 'Profit (₹)',
-      forecastedProfit: selectedTx.forecastedProfit,
-      actualProfit: selectedTx.actualProfit,
+      label: 'Price (₹/kg)',
+      forecastedPrice: selectedTx.forecastedPrice,
+      actualPrice: selectedTx.actualPrice,
     },
   ];
 
@@ -94,7 +94,7 @@ export default function ReceiptsTab() {
         <CardHeader>
           <CardTitle>🧾 Digital Receipt Vault</CardTitle>
           <CardDescription>
-            An interactive list of your past crop sales.
+            An interactive list of your past crop sales. Select one to analyze.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -129,7 +129,7 @@ export default function ReceiptsTab() {
                       className="mr-2"
                     >
                       <FileText className="mr-2 h-4 w-4" />
-                      View
+                      Analyze
                     </Button>
                     <Button
                       variant="outline"
@@ -156,47 +156,46 @@ export default function ReceiptsTab() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Profit Analysis</CardTitle>
+          <CardTitle>Price Analysis</CardTitle>
           <CardDescription>
-            Forecast vs. Actual for{' '}
-            <span className="font-bold text-primary">{selectedTx.cropName}</span> on{' '}
-            {new Date(selectedTx.date).toLocaleDateString()}
+            Forecast vs. Actual Price for{' '}
+            <span className="font-bold text-primary">{selectedTx.cropName}</span>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="rounded-lg border p-4">
-                    <p className="text-sm text-muted-foreground">Forecasted Profit</p>
-                    <p className="text-2xl font-bold">₹{selectedTx.forecastedProfit.toLocaleString()}</p>
+                    <p className="text-sm text-muted-foreground">Forecasted Price</p>
+                    <p className="text-2xl font-bold">₹{selectedTx.forecastedPrice.toLocaleString()}<span className="text-sm text-muted-foreground">/kg</span></p>
                 </div>
                  <div className="rounded-lg border p-4">
-                    <p className="text-sm text-muted-foreground">Actual Profit</p>
-                    <p className="text-2xl font-bold">₹{selectedTx.actualProfit.toLocaleString()}</p>
+                    <p className="text-sm text-muted-foreground">Actual Price</p>
+                    <p className="text-2xl font-bold">₹{selectedTx.actualPrice.toLocaleString()}<span className="text-sm text-muted-foreground">/kg</span></p>
                 </div>
             </div>
-          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+          <ChartContainer config={chartConfig} className="h-[150px] w-full">
             <BarChart accessibilityLayer data={chartData} margin={{left: -20, right: 20}}>
               <CartesianGrid vertical={false} />
-              <YAxis tickLine={false} axisLine={false} />
+              <YAxis tickLine={false} axisLine={false} hide />
               <XAxis dataKey="label" tickLine={false} axisLine={false} hide />
               <ChartTooltip
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar dataKey="forecastedProfit" fill="var(--color-forecastedProfit)" radius={4} />
-              <Bar dataKey="actualProfit" fill="var(--color-actualProfit)" radius={4} />
+              <Bar dataKey="forecastedPrice" fill="var(--color-forecastedPrice)" radius={4} />
+              <Bar dataKey="actualPrice" fill="var(--color-actualPrice)" radius={4} />
             </BarChart>
           </ChartContainer>
             <div className="flex items-center justify-center gap-2 text-sm">
-                {selectedTx.actualProfit >= selectedTx.forecastedProfit ? (
+                {selectedTx.actualPrice >= selectedTx.forecastedPrice ? (
                     <TrendingUp className="h-5 w-5 text-green-500" />
                 ) : (
                     <TrendingDown className="h-5 w-5 text-red-500" />
                 )}
                 <p>
-                    {selectedTx.actualProfit >= selectedTx.forecastedProfit ? 'Exceeded' : 'Below'} forecast by{' '}
+                    {selectedTx.actualPrice >= selectedTx.forecastedPrice ? 'Exceeded' : 'Below'} forecast by{' '}
                     <span className="font-bold">
-                        ₹{Math.abs(selectedTx.actualProfit - selectedTx.forecastedProfit).toLocaleString()}
+                        ₹{Math.abs(selectedTx.actualPrice - selectedTx.forecastedPrice).toLocaleString()}/kg
                     </span>
                 </p>
            </div>
