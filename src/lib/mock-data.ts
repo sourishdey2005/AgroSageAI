@@ -1,5 +1,6 @@
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -483,4 +484,19 @@ export const mockTransactions: MockTransaction[] = [
         forecastedProfit: 180000,
         actualProfit: 175000,
     }
+  ];
+
+  export const mockProfitProjections = {
+    projected: 850000,
+    achieved: 780000,
+    month: 'October 2023',
+  };
+  
+  export const mockYieldWeatherCorrelation = [
+    { month: 'May', yield: 4500, rainfall: 80, temp: 35 },
+    { month: 'Jun', yield: 4800, rainfall: 120, temp: 32 },
+    { month: 'Jul', yield: 5200, rainfall: 180, temp: 30 },
+    { month: 'Aug', yield: 5100, rainfall: 200, temp: 29 },
+    { month: 'Sep', yield: 4900, rainfall: 150, temp: 31 },
+    { month: 'Oct', yield: 5300, rainfall: 100, temp: 33 },
   ];

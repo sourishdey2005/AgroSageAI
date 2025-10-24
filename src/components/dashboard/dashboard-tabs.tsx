@@ -1,16 +1,18 @@
+
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bot, Leaf, LineChart, Receipt } from 'lucide-react';
+import { Bot, Leaf, LineChart, Receipt, AreaChart } from 'lucide-react';
 import CropHealthTab from './crop-health';
 import MarketInsightsTab from './market-insights';
 import ReceiptsTab from './receipts';
 import ChatbotTab from './chatbot';
+import AnalyticsTab from './analytics';
 
 export default function DashboardTabs() {
   return (
     <Tabs defaultValue="crop-health" className="w-full">
-      <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+      <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">
         <TabsTrigger value="crop-health" className="py-2">
           <Leaf className="mr-2" />
           Crop Health
@@ -22,6 +24,10 @@ export default function DashboardTabs() {
         <TabsTrigger value="receipts" className="py-2">
           <Receipt className="mr-2" />
           Receipts
+        </TabsTrigger>
+        <TabsTrigger value="analytics" className="py-2">
+            <AreaChart className="mr-2" />
+            Analytics
         </TabsTrigger>
         <TabsTrigger value="chatbot" className="py-2">
           <Bot className="mr-2" />
@@ -36,6 +42,9 @@ export default function DashboardTabs() {
       </TabsContent>
       <TabsContent value="receipts" className="mt-4">
         <ReceiptsTab />
+      </TabsContent>
+      <TabsContent value="analytics" className="mt-4">
+        <AnalyticsTab />
       </TabsContent>
       <TabsContent value="chatbot" className="mt-4">
         <ChatbotTab />
