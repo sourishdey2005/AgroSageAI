@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   AreaChart,
   Bot,
+  Briefcase,
   FlaskConical,
   LayoutGrid,
   Leaf,
@@ -113,6 +114,15 @@ export default function DashboardSidebar() {
               <Link href="/dashboard/chatbot">
                 <Bot />
                 <span>AgroBot</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarSeparator />
+           <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={{ children: 'Agent Dashboard' }} isActive={isActive('/dashboard/agent')}>
+              <Link href="/dashboard/agent">
+                <Briefcase />
+                <span>Agent Dashboard</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

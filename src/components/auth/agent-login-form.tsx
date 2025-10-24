@@ -50,7 +50,7 @@ export function AgentLoginForm() {
         values.email === hardcodedCredentials.email &&
         values.password === hardcodedCredentials.password
       ) {
-        router.push("/dashboard");
+        router.push("/dashboard/agent");
       } else {
         toast({
           variant: "destructive",
