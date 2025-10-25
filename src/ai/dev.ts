@@ -1,3 +1,4 @@
+
 import { config } from 'dotenv';
 config();
 
@@ -8,3 +9,4 @@ import '@/ai/flows/market-price-trend-analysis.ts';
 import '@/ai/flows/weekly-report-flow.ts';
 import '@/ai/flows/daily-action-plan-flow.ts';
 import '@/ai/flows/knowledge-hub-flow.ts';
+import '@/ai/flows/negotiation-simulation-flow.ts';
