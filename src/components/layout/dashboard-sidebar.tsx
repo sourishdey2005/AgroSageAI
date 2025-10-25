@@ -15,6 +15,7 @@ import {
   MessageSquare,
   Receipt,
   Settings,
+  BarChart3,
 } from 'lucide-react';
 import {
   SidebarHeader,
@@ -24,19 +25,32 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarSeparator,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
 } from '@/components/ui/sidebar';
 import { AgroSageLogo } from '../icons';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const isActive = (path: string) => {
     // For the main dashboard, check for exact match.
-    if (path === '/dashboard') {
+    if (path === '/dashboard' || path === '/dashboard/agent') {
       return pathname === path;
     }
     // For other pages, check if the pathname starts with the path.
     return pathname.startsWith(path);
-  }
+  };
+
+  const isAgentRoute = pathname.startsWith('/dashboard/agent');
+  const [isAgentMenuOpen, setIsAgentMenuOpen] = useState(isAgentRoute);
 
   return (
     <>
@@ -118,14 +132,36 @@ export default function DashboardSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarSeparator />
-           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip={{ children: 'Agent Dashboard' }} isActive={isActive('/dashboard/agent')}>
-              <Link href="/dashboard/agent">
-                <Briefcase />
-                <span>Agent Dashboard</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+           <Collapsible asChild onOpenChange={setIsAgentMenuOpen} open={isAgentMenuOpen}>
+            <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton asChild={false} tooltip={{ children: 'Agent Dashboard' }} isActive={isAgentRoute}>
+                      <Briefcase />
+                      <span>Agent Dashboard</span>
+                      <ChevronDown className={cn("ml-auto transition-transform", isAgentMenuOpen && "rotate-180")} />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent asChild>
+                  <SidebarMenuSub>
+                    <SidebarMenuItem>
+                      <SidebarMenuSubButton asChild isActive={pathname === '/dashboard/agent'}>
+                        <Link href="/dashboard/agent">
+                          <span>Overview</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuSubButton asChild isActive={pathname === '/dashboard/agent/analytics'}>
+                        <Link href="/dashboard/agent/analytics">
+                           <BarChart3 />
+                           <span>Analytics</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
         </SidebarMenu>
       </SidebarContent>
 

@@ -10,6 +10,7 @@
 
 
 
+
 export type MockDiagnosis = {
   id: string;
   imageUrl: string;
@@ -802,3 +803,63 @@ export const mockLiveMandiData = [
     { time: '12:00 PM', Pune: 55, Nagpur: 53, Lucknow: 55 },
     { time: '1:00 PM', Pune: 54, Nagpur: 54, Lucknow: 57 },
 ];
+
+export const mockTradeVolume = [
+    { crop: 'Tomato', Pune: 1200, Nagpur: 800, Lucknow: 1500 },
+    { crop: 'Wheat', Pune: 2000, Nagpur: 1500, Lucknow: 1800 },
+    { crop: 'Rice', Pune: 1800, Nagpur: 2200, Lucknow: 2000 },
+    { crop: 'Onion', Pune: 900, Nagpur: 700, Lucknow: 1100 },
+];
+
+export const mockSupplyChainData = {
+    nodes: [
+      { id: 'Farm A' }, { id: 'Farm B' },
+      { id: 'Collector 1' }, { id: 'Collector 2' },
+      { id: 'Nagpur Mandi' }, { id: 'Pune Mandi' },
+      { id: 'Retailer X' }, { id: 'Retailer Y' }, { id: 'Exporter Z' }
+    ],
+    links: [
+      { source: 'Farm A', target: 'Collector 1', value: 100 },
+      { source: 'Farm B', target: 'Collector 1', value: 80 },
+      { source: 'Farm B', target: 'Collector 2', value: 120 },
+      { source: 'Collector 1', target: 'Nagpur Mandi', value: 180 },
+      { source: 'Collector 2', target: 'Pune Mandi', value: 120 },
+      { source: 'Nagpur Mandi', target: 'Retailer X', value: 100 },
+      { source: 'Nagpur Mandi', target: 'Retailer Y', value: 80 },
+      { source: 'Pune Mandi', target: 'Retailer Y', value: 70 },
+      { source: 'Pune Mandi', target: 'Exporter Z', value: 50 },
+    ],
+};
+
+export const mockPricePrediction = {
+    spikePrice: 65,
+    spikeDays: 4,
+    trend: [
+        { day: 'Today', price: 58 },
+        { day: '+1', price: 60 },
+        { day: '+2', price: 62 },
+        { day: '+3', price: 64 },
+        { day: '+4', price: 65 },
+        { day: '+5', price: 63 },
+        { day: '+6', price: 61 },
+    ]
+};
+
+export const mockCropSuitability = [
+    { region: 'MH-01', bestCrop: 'Cotton', suitabilityScore: 85 },
+    { region: 'MH-02', bestCrop: 'Sugarcane', suitabilityScore: 92 },
+    { region: 'UP-01', bestCrop: 'Wheat', suitabilityScore: 88 },
+    { region: 'UP-02', bestCrop: 'Rice', suitabilityScore: 78 },
+    { region: 'PB-01', bestCrop: 'Wheat', suitabilityScore: 95 },
+    { region: 'PB-02', bestCrop: 'Rice', suitabilityScore: 82 },
+    { region: 'GJ-01', bestCrop: 'Groundnut', suitabilityScore: 90 },
+    { region: 'GJ-02', bestCrop: 'Cotton', suitabilityScore: 87 },
+    { region: 'AP-01', bestCrop: 'Chilli', suitabilityScore: 93 },
+    { region: 'TN-01', bestCrop: 'Banana', suitabilityScore: 89 },
+    { region: 'KA-01', bestCrop: 'Coffee', suitabilityScore: 94 },
+    { region: 'KA-02', bestCrop: 'Maize', suitabilityScore: 76 },
+    { region: 'RJ-01', bestCrop: 'Mustard', suitabilityScore: 81 },
+    { region: 'MP-01', bestCrop: 'Soybean', suitabilityScore: 88 },
+    { region: 'WB-01', bestCrop: 'Jute', suitabilityScore: 91 },
+    { region: 'HR-01', bestCrop: 'Bajra', suitabilityScore: 79 },
+  ];
