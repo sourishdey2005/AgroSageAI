@@ -1,0 +1,7 @@
+{
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "engines": {
+    "node": "20.x"
+  }
+}
